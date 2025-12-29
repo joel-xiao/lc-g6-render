@@ -289,6 +289,19 @@ function loadSampleData() {
         center: { show: true, showIcon: false, text: 'CORE' }
       },
       { 
+        id: 'center-number-text', 
+        title: '数字+文字', 
+        desc: '中心数字: 10 + 文字: CORE',
+        type: 'node-icon',
+        node_type: 'server',
+        statusType: 'normal',
+        data: { 
+          status: 'normal',
+          center_number: 10
+        },
+        center: { show: true, showIcon: false, text: 'CORE' }
+      },
+      { 
         id: 'center-icon', 
         title: '中心图标', 
         desc: '中心图标（带数字）',
