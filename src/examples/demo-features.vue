@@ -45,7 +45,6 @@
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
 import LcG6 from '../index.vue'
-import { toG6Data } from '../compossible/data-format-methods.js'
 
 const show = ref(false)
 const lcG6 = ref(null)
@@ -96,9 +95,8 @@ const g6Options = computed(() => {
 })
 
 function loadSampleData() {
-  const rawData = {
-    props: ['id'], // Explicitly use 'id' for this demo
-    nodes: [
+  // 直接使用 G6 格式，不使用 toG6Data
+  const nodes = [
       // 节点类型展示
       { 
         id: 'node-type-app', 
