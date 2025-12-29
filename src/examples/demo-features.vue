@@ -274,7 +274,7 @@ function loadSampleData() {
           status: 'normal',
           center_number: 10
         },
-        center: { show: true }
+        center: { show: true, showIcon: false, text: undefined }
       },
       { 
         id: 'center-text', 
@@ -284,17 +284,30 @@ function loadSampleData() {
         node_type: 'server',
         statusType: 'normal',
         data: { 
-          status: 'normal',
-          center_number: 'CORE'
+          status: 'normal'
         },
-        center: { show: true, showIcon: false }
+        center: { show: true, showIcon: false, text: 'CORE' }
+      },
+      { 
+        id: 'center-icon', 
+        title: '中心图标', 
+        desc: '中心图标（带数字）',
+        type: 'node-icon',
+        node_type: 'server',
+        statusType: 'normal',
+        showIcon: false, // 隐藏节点类型图标
+        data: { 
+          status: 'normal',
+          center_number: 5
+        },
+        center: { show: true, showIcon: true }
       },
       
-      // 第六组：图标展示
+      // 第六组：节点类型图标展示
       { 
         id: 'icon-show', 
-        title: '显示图标', 
-        desc: 'showIcon: true',
+        title: '显示节点图标', 
+        desc: 'showIcon: true (显示节点类型图标)',
         type: 'node-icon',
         node_type: 'app',
         statusType: 'normal',
@@ -303,8 +316,8 @@ function loadSampleData() {
       },
       { 
         id: 'icon-hide', 
-        title: '隐藏图标', 
-        desc: 'showIcon: false',
+        title: '隐藏节点图标', 
+        desc: 'showIcon: false (隐藏节点类型图标)',
         type: 'node-icon',
         node_type: 'app',
         statusType: 'normal',
