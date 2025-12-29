@@ -100,32 +100,36 @@ function loadSampleData() {
       // 节点类型展示
       { 
         id: 'node-type-app', 
-        label: '节点类型: app', 
+        title: '节点类型: app', 
         desc: 'node_type: app',
+        type: 'node-icon',
         node_type: 'app',
         statusType: 'normal',
         data: { status: 'normal' }
       },
       { 
         id: 'node-type-sys', 
-        label: '节点类型: sys', 
+        title: '节点类型: sys', 
         desc: 'node_type: sys',
+        type: 'node-icon',
         node_type: 'sys',
         statusType: 'normal',
         data: { status: 'normal' }
       },
       { 
         id: 'node-type-db', 
-        label: '节点类型: db', 
+        title: '节点类型: db', 
         desc: 'node_type: db',
+        type: 'node-icon',
         node_type: 'db',
         statusType: 'normal',
         data: { status: 'normal' }
       },
       { 
         id: 'node-type-server', 
-        label: '节点类型: server', 
+        title: '节点类型: server', 
         desc: 'node_type: server',
+        type: 'node-icon',
         node_type: 'server',
         statusType: 'normal',
         data: { status: 'normal' }
@@ -134,8 +138,9 @@ function loadSampleData() {
       // 节点形状展示
       { 
         id: 'shape-hexagonal', 
-        label: '形状: 六边形', 
+        title: '形状: 六边形', 
         desc: 'shape: hexagonal-polygon',
+        type: 'node-icon',
         node_type: 'sys',
         shape: 'hexagonal-polygon',
         statusType: 'normal',
@@ -143,8 +148,9 @@ function loadSampleData() {
       },
       { 
         id: 'shape-ellipse', 
-        label: '形状: 椭圆', 
+        title: '形状: 椭圆', 
         desc: 'shape: ellipse',
+        type: 'node-icon',
         node_type: 'db',
         shape: 'ellipse',
         statusType: 'normal',
@@ -154,40 +160,45 @@ function loadSampleData() {
       // 状态类型（光环）展示
       { 
         id: 'status-normal', 
-        label: '状态: 正常', 
+        title: '状态: 正常', 
         desc: 'statusType: normal (Green Halo)',
+        type: 'node-icon',
         statusType: 'normal',
         node_type: 'app',
         data: { status: 'normal' }
       },
       { 
         id: 'status-warning', 
-        label: '状态: 警告', 
+        title: '状态: 警告', 
         desc: 'statusType: warning (Yellow Halo)',
+        type: 'node-icon',
         statusType: 'warning',
         node_type: 'app',
         data: { status: 'warning' }
       },
       { 
         id: 'status-abnormal', 
-        label: '状态: 异常', 
+        title: '状态: 异常', 
         desc: 'statusType: abnormal (Red Halo)',
+        type: 'node-icon',
         statusType: 'abnormal',
         node_type: 'app',
         data: { status: 'error' }
       },
       { 
         id: 'status-disabled', 
-        label: '状态: 禁用', 
+        title: '状态: 禁用', 
         desc: 'statusType: disabled (Gray)',
+        type: 'node-icon',
         statusType: 'disabled',
         node_type: 'app',
         data: { status: 'normal' }
       },
       { 
         id: 'status-external', 
-        label: '状态: 外部', 
+        title: '状态: 外部', 
         desc: 'statusType: external',
+        type: 'node-icon',
         statusType: 'external',
         node_type: 'app',
         data: { status: 'normal' }
@@ -196,8 +207,9 @@ function loadSampleData() {
       // 角标展示
       { 
         id: 'badges-top', 
-        label: '右上角标', 
+        title: '右上角标', 
         desc: 'Right Top Badge: 99',
+        type: 'node-icon',
         node_type: 'app',
         statusType: 'normal',
         data: { 
@@ -208,8 +220,9 @@ function loadSampleData() {
       },
       { 
         id: 'badges-bottom', 
-        label: '右下角标', 
+        title: '右下角标', 
         desc: 'Right Bottom Badge: 5',
+        type: 'node-icon',
         node_type: 'app',
         statusType: 'normal',
         data: { 
@@ -220,8 +233,9 @@ function loadSampleData() {
       },
       { 
         id: 'badges-both', 
-        label: '双角标', 
+        title: '双角标', 
         desc: 'Both Badges: 99/5',
+        type: 'node-icon',
         node_type: 'db',
         statusType: 'warning',
         data: { 
@@ -236,8 +250,9 @@ function loadSampleData() {
       // 中心内容展示
       { 
         id: 'center-number', 
-        label: '中心数字', 
+        title: '中心数字', 
         desc: 'Center Number: 10',
+        type: 'node-icon',
         node_type: 'server',
         statusType: 'normal',
         data: { 
@@ -248,8 +263,9 @@ function loadSampleData() {
       },
       { 
         id: 'center-text', 
-        label: '中心文字', 
+        title: '中心文字', 
         desc: 'Center Text: CORE',
+        type: 'node-icon',
         node_type: 'server',
         statusType: 'normal',
         data: { 
@@ -262,8 +278,9 @@ function loadSampleData() {
       // 图标展示
       { 
         id: 'icon-show', 
-        label: '显示图标', 
+        title: '显示图标', 
         desc: 'showIcon: true',
+        type: 'node-icon',
         node_type: 'app',
         statusType: 'normal',
         showIcon: true,
@@ -271,8 +288,9 @@ function loadSampleData() {
       },
       { 
         id: 'icon-hide', 
-        label: '隐藏图标', 
+        title: '隐藏图标', 
         desc: 'showIcon: false',
+        type: 'node-icon',
         node_type: 'app',
         statusType: 'normal',
         showIcon: false,
