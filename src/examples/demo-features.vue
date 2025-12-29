@@ -352,23 +352,21 @@ function loadSampleData() {
         if (original.rightTop) node.rightTop = original.rightTop
         if (original.rightBottom) node.rightBottom = original.rightBottom
         if (original.center) node.center = original.center
+        if (original.node_type) node.node_type = original.node_type
     }
   })
   
-  // 处理边类型
+  // 处理边类型：确保边使用正确的 type
   formatted.edges.forEach(edge => {
-    const original = rawData.links.find(l => {
-      const edgeSource = edge.source
-      const edgeTarget = edge.target
-      const linkFromId = typeof rawData.links[0].from === 'object' ? rawData.links.find(link => {
-        const formattedNode = formatted.nodes.find(n => n.id === (link.from.id || link.from.appsysid))
-        return formattedNode && formattedNode.id === edgeSource
-      })?.from?.id : rawData.links[0].from
-      // 简化处理：直接从 rawData 中查找对应的 link
-      return false // 暂时不处理，因为 edge 的 source/target 已经转换了
+    // 找到对应的原始 link（通过 source_props 和 target_props 匹配）
+    const originalLink = rawData.links.find(link => {
+      const linkFromId = link.from.id || link.from.appsysid
+      const linkToId = link.to.id || link.to.appsysid
+      return (edge.source_props?.id === linkFromId || edge.source === linkFromId) &&
+             (edge.target_props?.id === linkToId || edge.target === linkToId)
     })
-    if (original?.type) {
-      edge.type = original.type
+    if (originalLink?.type) {
+      edge.type = originalLink.type
     }
   })
 
