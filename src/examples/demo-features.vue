@@ -64,11 +64,11 @@ const g6Options = computed(() => {
     customBehaviors: ['normal-event'],
     tooltip: { show: true },
     layout: {
-      type: 'grid',
-      begin: [50, 50],
-      width: 800,
-      height: 600,
-      cols: 6
+      type: 'dagre',
+      rankdir: 'LR',
+      nodesep: 120,
+      ranksep: 150,
+      controlPoints: true
     },
     defaultNode: {
       type: 'node-icon',
@@ -80,7 +80,10 @@ const g6Options = computed(() => {
       },
       labelCfg: {
         position: 'bottom',
-        offset: 10
+        offset: 10,
+        style: {
+          fontSize: 12
+        }
       }
     },
     defaultEdge: {
@@ -88,20 +91,32 @@ const g6Options = computed(() => {
       style: {
         stroke: '#6AC9FF',
         lineWidth: 2
+      },
+      labelCfg: {
+        style: {
+          fontSize: 10,
+          fill: '#666',
+          background: {
+            fill: '#fff',
+            padding: [2, 4, 2, 4],
+            radius: 2
+          }
+        }
       }
     },
-    fitView: true
+    fitView: true,
+    fitViewPadding: 50
   }
 })
 
 function loadSampleData() {
-  // 直接使用 G6 格式，不使用 toG6Data
+  // 直接使用 G6 格式，按功能分组清晰展示
   const nodes = [
-      // 节点类型展示
+      // 第一组：节点类型展示（从左到右连接）
       { 
         id: 'node-type-app', 
-        title: '节点类型: app', 
-        desc: 'node_type: app',
+        title: 'app', 
+        desc: '节点类型: app',
         type: 'node-icon',
         node_type: 'app',
         statusType: 'normal',
@@ -109,8 +124,8 @@ function loadSampleData() {
       },
       { 
         id: 'node-type-sys', 
-        title: '节点类型: sys', 
-        desc: 'node_type: sys',
+        title: 'sys', 
+        desc: '节点类型: sys',
         type: 'node-icon',
         node_type: 'sys',
         statusType: 'normal',
@@ -118,8 +133,8 @@ function loadSampleData() {
       },
       { 
         id: 'node-type-db', 
-        title: '节点类型: db', 
-        desc: 'node_type: db',
+        title: 'db', 
+        desc: '节点类型: db',
         type: 'node-icon',
         node_type: 'db',
         statusType: 'normal',
@@ -127,18 +142,18 @@ function loadSampleData() {
       },
       { 
         id: 'node-type-server', 
-        title: '节点类型: server', 
-        desc: 'node_type: server',
+        title: 'server', 
+        desc: '节点类型: server',
         type: 'node-icon',
         node_type: 'server',
         statusType: 'normal',
         data: { status: 'normal' }
       },
       
-      // 节点形状展示
+      // 第二组：节点形状展示
       { 
         id: 'shape-hexagonal', 
-        title: '形状: 六边形', 
+        title: '六边形', 
         desc: 'shape: hexagonal-polygon',
         type: 'node-icon',
         node_type: 'sys',
@@ -148,7 +163,7 @@ function loadSampleData() {
       },
       { 
         id: 'shape-ellipse', 
-        title: '形状: 椭圆', 
+        title: '椭圆', 
         desc: 'shape: ellipse',
         type: 'node-icon',
         node_type: 'db',
@@ -157,11 +172,11 @@ function loadSampleData() {
         data: { status: 'normal' }
       },
       
-      // 状态类型（光环）展示
+      // 第三组：状态类型（光环）展示 - 形成状态流转链
       { 
         id: 'status-normal', 
-        title: '状态: 正常', 
-        desc: 'statusType: normal (Green Halo)',
+        title: '正常', 
+        desc: 'statusType: normal (绿色光环)',
         type: 'node-icon',
         statusType: 'normal',
         node_type: 'app',
@@ -169,8 +184,8 @@ function loadSampleData() {
       },
       { 
         id: 'status-warning', 
-        title: '状态: 警告', 
-        desc: 'statusType: warning (Yellow Halo)',
+        title: '警告', 
+        desc: 'statusType: warning (黄色光环)',
         type: 'node-icon',
         statusType: 'warning',
         node_type: 'app',
@@ -178,8 +193,8 @@ function loadSampleData() {
       },
       { 
         id: 'status-abnormal', 
-        title: '状态: 异常', 
-        desc: 'statusType: abnormal (Red Halo)',
+        title: '异常', 
+        desc: 'statusType: abnormal (红色光环)',
         type: 'node-icon',
         statusType: 'abnormal',
         node_type: 'app',
@@ -187,8 +202,8 @@ function loadSampleData() {
       },
       { 
         id: 'status-disabled', 
-        title: '状态: 禁用', 
-        desc: 'statusType: disabled (Gray)',
+        title: '禁用', 
+        desc: 'statusType: disabled (灰色)',
         type: 'node-icon',
         statusType: 'disabled',
         node_type: 'app',
@@ -196,7 +211,7 @@ function loadSampleData() {
       },
       { 
         id: 'status-external', 
-        title: '状态: 外部', 
+        title: '外部', 
         desc: 'statusType: external',
         type: 'node-icon',
         statusType: 'external',
@@ -204,11 +219,11 @@ function loadSampleData() {
         data: { status: 'normal' }
       },
       
-      // 角标展示
+      // 第四组：角标展示
       { 
         id: 'badges-top', 
         title: '右上角标', 
-        desc: 'Right Top Badge: 99',
+        desc: '右上角标: 99',
         type: 'node-icon',
         node_type: 'app',
         statusType: 'normal',
@@ -221,7 +236,7 @@ function loadSampleData() {
       { 
         id: 'badges-bottom', 
         title: '右下角标', 
-        desc: 'Right Bottom Badge: 5',
+        desc: '右下角标: 5',
         type: 'node-icon',
         node_type: 'app',
         statusType: 'normal',
@@ -234,7 +249,7 @@ function loadSampleData() {
       { 
         id: 'badges-both', 
         title: '双角标', 
-        desc: 'Both Badges: 99/5',
+        desc: '双角标: 99/5',
         type: 'node-icon',
         node_type: 'db',
         statusType: 'warning',
@@ -247,11 +262,11 @@ function loadSampleData() {
         rightBottom: { show: true }
       },
       
-      // 中心内容展示
+      // 第五组：中心内容展示
       { 
         id: 'center-number', 
         title: '中心数字', 
-        desc: 'Center Number: 10',
+        desc: '中心数字: 10',
         type: 'node-icon',
         node_type: 'server',
         statusType: 'normal',
@@ -264,7 +279,7 @@ function loadSampleData() {
       { 
         id: 'center-text', 
         title: '中心文字', 
-        desc: 'Center Text: CORE',
+        desc: '中心文字: CORE',
         type: 'node-icon',
         node_type: 'server',
         statusType: 'normal',
@@ -275,7 +290,7 @@ function loadSampleData() {
         center: { show: true, showIcon: false }
       },
       
-      // 图标展示
+      // 第六组：图标展示
       { 
         id: 'icon-show', 
         title: '显示图标', 
@@ -298,55 +313,100 @@ function loadSampleData() {
       }
     ]
 
-  // 直接使用 G6 格式创建边
+  // 创建清晰的边连接，展示不同边类型
   const edges = [
-    // 边类型展示
+    // 节点类型组：从左到右连接，展示不同边类型
     { 
       id: 'edge-line',
       source: 'node-type-app',
       target: 'node-type-sys',
       type: 'line-circle-run',
-      label: 'line-circle-run'
+      label: 'line'
     },
     { 
       id: 'edge-cubic',
       source: 'node-type-sys',
       target: 'node-type-db',
       type: 'cubic-circle-run',
-      label: 'cubic-circle-run'
+      label: 'cubic'
     },
     { 
       id: 'edge-cubic-v',
       source: 'node-type-db',
       target: 'node-type-server',
       type: 'cubic-v-circle-run',
-      label: 'cubic-v-circle-run'
+      label: 'cubic-v'
     },
+    
+    // 形状组：连接形状节点
     { 
-      id: 'edge-cubic-h',
+      id: 'edge-shape',
+      source: 'shape-hexagonal',
+      target: 'shape-ellipse',
+      type: 'cubic-h-circle-run',
+      label: 'cubic-h'
+    },
+    
+    // 状态流转链：正常 -> 警告 -> 异常 -> 自环
+    { 
+      id: 'edge-status-1',
       source: 'status-normal',
       target: 'status-warning',
-      type: 'cubic-h-circle-run',
-      label: 'cubic-h-circle-run'
+      type: 'quadratic-circle-run',
+      label: 'quadratic'
     },
     { 
-      id: 'edge-quadratic',
+      id: 'edge-status-2',
       source: 'status-warning',
       target: 'status-abnormal',
-      type: 'quadratic-circle-run',
-      label: 'quadratic-circle-run'
+      type: 'cubic-v-circle-run',
+      label: ''
     },
     { 
       id: 'edge-loop',
       source: 'status-abnormal',
       target: 'status-abnormal',
       type: 'loop-circle-run',
-      label: 'loop-circle-run',
+      label: 'loop',
       loopCfg: {
         position: 'top',
         dist: 60,
         clockwise: true
       }
+    },
+    
+    // 角标组：连接展示
+    { 
+      id: 'edge-badge-1',
+      source: 'badges-top',
+      target: 'badges-both',
+      type: 'line-circle-run',
+      label: ''
+    },
+    { 
+      id: 'edge-badge-2',
+      source: 'badges-bottom',
+      target: 'badges-both',
+      type: 'line-circle-run',
+      label: ''
+    },
+    
+    // 中心内容组
+    { 
+      id: 'edge-center',
+      source: 'center-number',
+      target: 'center-text',
+      type: 'cubic-circle-run',
+      label: ''
+    },
+    
+    // 图标组
+    { 
+      id: 'edge-icon',
+      source: 'icon-show',
+      target: 'icon-hide',
+      type: 'line-circle-run',
+      label: ''
     }
   ]
 
