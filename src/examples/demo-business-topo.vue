@@ -3,7 +3,6 @@
     <div class="demo-header">
       <h2>业务拓扑图 (Business Domain View)</h2>
       <div class="demo-controls">
-        <el-button size="small" type="primary" @click="loadSampleData">加载业务数据</el-button>
         <el-button size="small" @click="clearData">清空</el-button>
         <el-button size="small" @click="toggleCombos">
           {{ isCollapsed ? '展开所有分组' : '折叠所有分组' }}
@@ -43,7 +42,7 @@
       <div v-if="!show" class="no-data">
         <LcLoadingIcon />
         <div style="font-size: 12px; color: #666; margin-top: 5px">
-          点击"加载业务数据"查看领域模型
+          正在加载数据...
         </div>
       </div>
     </div>
@@ -66,7 +65,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import LcG6 from '../index.vue'
 import LcLoadingIcon from '../lc-loading-icon.vue'
 import { toG6Data } from '../compossible/data-format-methods.js'
@@ -236,6 +235,10 @@ function onEvent(type, e) {
 function onZoom(zoom) {
   currentZoom.value = zoom
 }
+
+onMounted(() => {
+  loadSampleData()
+})
 </script>
 
 <style lang="scss" scoped>

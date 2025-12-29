@@ -3,7 +3,6 @@
     <div class="demo-header">
       <h2>系统拓扑图 (System Infrastructure View)</h2>
       <div class="demo-controls">
-        <el-button size="small" type="primary" @click="loadSampleData">加载系统数据</el-button>
         <el-button size="small" @click="clearData">清空</el-button>
         <el-button size="small" @click="changeLayout">切换布局: {{ currentLayout }}</el-button>
       </div>
@@ -34,7 +33,7 @@
       <div v-if="!show" class="no-data">
         <LcLoadingIcon />
         <div style="font-size: 12px; color: #666; margin-top: 5px">
-          点击"加载系统数据"查看基础设施视图
+          正在加载数据...
         </div>
       </div>
     </div>
@@ -57,7 +56,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import LcG6 from '../index.vue'
 import LcLoadingIcon from '../lc-loading-icon.vue'
 import { toG6Data } from '../compossible/data-format-methods.js'
@@ -159,6 +158,10 @@ function onEvent(type, e) {
 function onZoom(zoom) {
   currentZoom.value = zoom
 }
+
+onMounted(() => {
+  loadSampleData()
+})
 </script>
 
 <style lang="scss" scoped>

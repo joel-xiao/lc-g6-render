@@ -43,7 +43,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import LcG6 from '../index.vue'
 import { toG6Data } from '../compossible/data-format-methods.js'
 
@@ -212,6 +212,10 @@ function onEvent(type, e) {
 function onZoom(zoom) {
   currentZoom.value = zoom
 }
+
+onMounted(() => {
+  loadSampleData()
+})
 </script>
 
 <style lang="scss" scoped>
