@@ -494,10 +494,24 @@ function loadSampleData() {
     
     // 中心内容组
     { 
-      id: 'edge-center',
+      id: 'edge-center-1',
       source: 'center-number',
       target: 'center-text',
-      type: 'cubic-circle-run',
+      type: 'line-circle-run',
+      label: ''
+    },
+    { 
+      id: 'edge-center-2',
+      source: 'center-text',
+      target: 'center-number-text',
+      type: 'line-circle-run',
+      label: ''
+    },
+    { 
+      id: 'edge-center-3',
+      source: 'center-number-text',
+      target: 'center-icon',
+      type: 'line-circle-run',
       label: ''
     },
     
