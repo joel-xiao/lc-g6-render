@@ -296,98 +296,63 @@ function loadSampleData() {
         showIcon: false,
         data: { status: 'normal' }
       }
-    ],
-    links: [
-      // 边类型展示
-      { 
-        id: 'edge-line',
-        from: { id: 'node-type-app' },
-        to: { id: 'node-type-sys' },
-        type: 'line-circle-run',
-        label: 'line-circle-run'
-      },
-      { 
-        id: 'edge-cubic',
-        from: { id: 'node-type-sys' },
-        to: { id: 'node-type-db' },
-        type: 'cubic-circle-run',
-        label: 'cubic-circle-run'
-      },
-      { 
-        id: 'edge-cubic-v',
-        from: { id: 'node-type-db' },
-        to: { id: 'node-type-server' },
-        type: 'cubic-v-circle-run',
-        label: 'cubic-v-circle-run'
-      },
-      { 
-        id: 'edge-cubic-h',
-        from: { id: 'status-normal' },
-        to: { id: 'status-warning' },
-        type: 'cubic-h-circle-run',
-        label: 'cubic-h-circle-run'
-      },
-      { 
-        id: 'edge-quadratic',
-        from: { id: 'status-warning' },
-        to: { id: 'status-abnormal' },
-        type: 'quadratic-circle-run',
-        label: 'quadratic-circle-run'
-      },
-      { 
-        id: 'edge-loop',
-        from: { id: 'status-abnormal' },
-        to: { id: 'status-abnormal' },
-        type: 'loop-circle-run',
-        label: 'loop-circle-run'
-      }
     ]
-  }
 
-  // 处理边数据，添加 type 字段
-  rawData.links.forEach(link => {
-    if (link.type && !link.link_type) {
-      link.link_type = link.type
+  // 直接使用 G6 格式创建边
+  const edges = [
+    // 边类型展示
+    { 
+      id: 'edge-line',
+      source: 'node-type-app',
+      target: 'node-type-sys',
+      type: 'line-circle-run',
+      label: 'line-circle-run'
+    },
+    { 
+      id: 'edge-cubic',
+      source: 'node-type-sys',
+      target: 'node-type-db',
+      type: 'cubic-circle-run',
+      label: 'cubic-circle-run'
+    },
+    { 
+      id: 'edge-cubic-v',
+      source: 'node-type-db',
+      target: 'node-type-server',
+      type: 'cubic-v-circle-run',
+      label: 'cubic-v-circle-run'
+    },
+    { 
+      id: 'edge-cubic-h',
+      source: 'status-normal',
+      target: 'status-warning',
+      type: 'cubic-h-circle-run',
+      label: 'cubic-h-circle-run'
+    },
+    { 
+      id: 'edge-quadratic',
+      source: 'status-warning',
+      target: 'status-abnormal',
+      type: 'quadratic-circle-run',
+      label: 'quadratic-circle-run'
+    },
+    { 
+      id: 'edge-loop',
+      source: 'status-abnormal',
+      target: 'status-abnormal',
+      type: 'loop-circle-run',
+      label: 'loop-circle-run',
+      loopCfg: {
+        position: 'top',
+        dist: 60,
+        clockwise: true
+      }
     }
-  })
-  
-  const formatted = toG6Data(rawData)
-  
-  // Apply specific styles that might be lost in simple toG6Data or need manual override
-  formatted.nodes.forEach(node => {
-    // Ensure styles are initialized
-    node.style = node.style || {};
-    
-    // Pass high-level props to model for renderers to pick up
-    const original = rawData.nodes.find(n => n.id === node.id);
-    if (original) {
-        // 保留所有原始属性
-        if (original.shape) node.shape = original.shape
-        if (original.statusType) node.statusType = original.statusType
-        if (original.showIcon !== undefined) node.showIcon = original.showIcon
-        if (original.rightTop) node.rightTop = original.rightTop
-        if (original.rightBottom) node.rightBottom = original.rightBottom
-        if (original.center) node.center = original.center
-        if (original.node_type) node.node_type = original.node_type
-    }
-  })
-  
-  // 处理边类型：确保边使用正确的 type
-  formatted.edges.forEach(edge => {
-    // 找到对应的原始 link（通过 source_props 和 target_props 匹配）
-    const originalLink = rawData.links.find(link => {
-      const linkFromId = link.from.id || link.from.appsysid
-      const linkToId = link.to.id || link.to.appsysid
-      return (edge.source_props?.id === linkFromId || edge.source === linkFromId) &&
-             (edge.target_props?.id === linkToId || edge.target === linkToId)
-    })
-    if (originalLink?.type) {
-      edge.type = originalLink.type
-    }
-  })
+  ]
 
-  graphData.nodes = formatted.nodes
-  graphData.edges = formatted.edges
+  // 直接设置 G6 格式的数据
+  graphData.nodes = nodes
+  graphData.edges = edges
   
   show.value = true
 }
