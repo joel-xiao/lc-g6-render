@@ -6,6 +6,19 @@
         <el-button size="small" type="primary" @click="loadSampleData">重置数据</el-button>
         <el-button size="small" @click="toggleAnimate">动画: {{ animate ? '开' : '关' }}</el-button>
         <el-button size="small" @click="toggleStatus">切换状态</el-button>
+        <el-select 
+          v-model="currentLayout" 
+          size="small" 
+          style="width: 150px; margin-left: 10px;"
+          @change="changeLayout"
+        >
+          <el-option
+            v-for="layout in layouts"
+            :key="layout.value"
+            :label="layout.label"
+            :value="layout.value"
+          />
+        </el-select>
       </div>
     </div>
 
@@ -43,13 +56,27 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, toRaw } from 'vue'
 import LcG6 from '../index.vue'
 
 const show = ref(false)
 const lcG6 = ref(null)
 const currentZoom = ref(1)
 const animate = ref(false)
+const currentLayout = ref('dagre')
+
+// G6 支持的所有布局类型（移除不支持的布局）
+const layouts = [
+  { label: 'Dagre (层次)', value: 'dagre' },
+  { label: 'Dagre-TBT', value: 'dagre-tbt' },
+  { label: 'Dagre-TGB', value: 'dagre-tgb' },
+  { label: 'Force (力导向)', value: 'force' },
+  { label: 'Circular (环形)', value: 'circular' },
+  { label: 'Radial (辐射)', value: 'radial' },
+  { label: 'ComboForce', value: 'comboForce' },
+  { label: 'Grid (网格)', value: 'grid' },
+  { label: 'Random (随机)', value: 'random' }
+]
 
 const graphData = reactive({
   nodes: [],
@@ -57,19 +84,104 @@ const graphData = reactive({
   combos: []
 })
 
+const getLayoutConfig = (layoutType) => {
+  // 使用普通对象，避免响应式导致的循环引用问题
+  const baseConfig = {
+    preventOverlap: true
+  }
+  
+  switch (layoutType) {
+    case 'dagre':
+      return {
+        ...baseConfig,
+        type: 'dagre',
+        rankdir: 'LR',
+        nodesep: 60,
+        ranksep: 100,
+        sortByCombo: true
+      }
+    case 'dagre-tbt':
+      return {
+        ...baseConfig,
+        type: 'dagre-tbt',
+        nodesep: 70,
+        ranksep: 80
+      }
+    case 'dagre-tgb':
+      return {
+        ...baseConfig,
+        type: 'dagre-tgb',
+        nodesep: 70,
+        ranksep: 80
+      }
+    case 'force':
+      return {
+        ...baseConfig,
+        type: 'force',
+        nodeSize: 100,
+        linkDistance: 150,
+        nodeStrength: -500,
+        edgeStrength: 0.2,
+        collideStrength: 1,
+        alpha: 0.5,
+        alphaDecay: 0.02,
+        tick: 100
+      }
+    case 'circular':
+      return {
+        ...baseConfig,
+        type: 'circular',
+        radius: 200,
+        startRadius: 10,
+        endRadius: 300,
+        clockwise: true,
+        divisions: 5
+      }
+    case 'radial':
+      return {
+        ...baseConfig,
+        type: 'radial',
+        unitRadius: 100,
+        preventOverlap: true
+      }
+    case 'comboForce':
+      return {
+        ...baseConfig,
+        type: 'comboForce',
+        nodeSpacing: 30,
+        comboSpacing: 50,
+        preventOverlap: true
+      }
+    case 'grid':
+      return {
+        ...baseConfig,
+        type: 'grid',
+        nodeSize: 100,
+        preventOverlapPadding: 30
+      }
+    case 'random':
+      return {
+        ...baseConfig,
+        type: 'random'
+      }
+    default:
+      return {
+        ...baseConfig,
+        type: 'dagre',
+        rankdir: 'LR',
+        nodesep: 60,
+        ranksep: 100
+      }
+  }
+}
+
 const g6Options = computed(() => {
   return {
     legend: true,
     minimap: true,
-    customBehaviors: ['normal-event'],
+    customBehaviors: ['normal-event', 'collapse-expand-combo', 'drag-combo'],
     tooltip: { show: true },
-    layout: {
-      type: 'dagre',
-      rankdir: 'LR',
-      nodesep: 120,
-      ranksep: 150,
-      controlPoints: true
-    },
+    layout: getLayoutConfig(currentLayout.value),
     defaultNode: {
       type: 'node-icon',
       size: 70,
@@ -84,6 +196,15 @@ const g6Options = computed(() => {
         style: {
           fontSize: 12
         }
+      }
+    },
+    defaultCombo: {
+      type: 'custom-combo',
+      padding: [80, 80, 80, 80],
+      style: {
+        fill: '#0099ff07',
+        stroke: '#09F',
+        lineWidth: 2
       }
     },
     defaultEdge: {
@@ -105,154 +226,118 @@ const g6Options = computed(() => {
       }
     },
     fitView: true,
-    fitViewPadding: 50
+    fitViewPadding: [20, 20, 20, 20]
   }
 })
 
 function loadSampleData() {
-  // 直接使用 G6 格式，按功能分组清晰展示
+  // 用少量节点展示所有场景
   const nodes = [
-      // 第一组：节点类型展示（从左到右连接）
+      // 1. 节点类型和形状（合并展示）
       { 
         id: 'node-type-app', 
+        label: 'app',
         title: 'app', 
-        desc: '节点类型: app',
+        desc: '节点类型: app, 形状: 圆形',
         type: 'node-icon',
         node_type: 'app',
+        shape: 'ellipse',
         statusType: 'normal',
+        showIcon: true,
+        icon: '/g6-icons/server-normal.svg',
+        comboId: 'group-basic',
         data: { status: 'normal' }
       },
-      { 
-        id: 'node-type-sys', 
-        title: 'sys', 
-        desc: '节点类型: sys',
-        type: 'node-icon',
-        node_type: 'sys',
-        statusType: 'normal',
-        data: { status: 'normal' }
-      },
-      { 
-        id: 'node-type-db', 
-        title: 'db', 
-        desc: '节点类型: db',
-        type: 'node-icon',
-        node_type: 'db',
-        statusType: 'normal',
-        data: { status: 'normal' }
-      },
-      { 
-        id: 'node-type-server', 
-        title: 'server', 
-        desc: '节点类型: server',
-        type: 'node-icon',
-        node_type: 'server',
-        statusType: 'normal',
-        data: { status: 'normal' }
-      },
-      
-      // 第二组：节点形状展示
       { 
         id: 'shape-hexagonal', 
+        label: '六边形',
         title: '六边形', 
-        desc: 'shape: hexagonal-polygon',
+        desc: '节点类型: sys, 形状: 六边形',
         type: 'node-icon',
         node_type: 'sys',
         shape: 'hexagonal-polygon',
         statusType: 'normal',
-        data: { status: 'normal' }
-      },
-      { 
-        id: 'shape-ellipse', 
-        title: '椭圆', 
-        desc: 'shape: ellipse',
-        type: 'node-icon',
-        node_type: 'db',
-        shape: 'ellipse',
-        statusType: 'normal',
+        showIcon: true,
+        icon: '/g6-icons/server2-normal.svg',
+        comboId: 'group-basic',
         data: { status: 'normal' }
       },
       
-      // 第三组：状态类型（光环）展示 - 形成状态流转链
+      // 2. 状态类型（只保留3个关键状态）
       { 
         id: 'status-normal', 
+        label: '正常',
         title: '正常', 
         desc: 'statusType: normal (绿色光环)',
         type: 'node-icon',
         statusType: 'normal',
-        node_type: 'app',
+        node_type: 'server',
+        showIcon: true,
+        comboId: 'group-status',
         data: { status: 'normal' }
       },
       { 
         id: 'status-warning', 
+        label: '警告',
         title: '警告', 
         desc: 'statusType: warning (黄色光环)',
         type: 'node-icon',
         statusType: 'warning',
-        node_type: 'app',
+        node_type: 'server',
+        showIcon: true,
+        comboId: 'group-status',
         data: { status: 'warning' }
       },
       { 
         id: 'status-abnormal', 
+        label: '异常',
         title: '异常', 
         desc: 'statusType: abnormal (红色光环)',
         type: 'node-icon',
         statusType: 'abnormal',
-        node_type: 'app',
+        node_type: 'server',
+        showIcon: true,
+        comboId: 'group-status',
         data: { status: 'error' }
       },
       { 
-        id: 'status-disabled', 
-        title: '禁用', 
-        desc: 'statusType: disabled (灰色)',
+        id: 'status-special', 
+        label: '特殊状态',
+        title: '特殊状态', 
+        desc: 'statusType: disabled/external/user',
         type: 'node-icon',
         statusType: 'disabled',
         node_type: 'app',
+        showIcon: true,
+        icon: '/g6-icons/deleted.svg',
+        comboId: 'group-status',
         data: { status: 'normal' }
       },
       { 
-        id: 'status-external', 
-        title: '外部', 
-        desc: 'statusType: external',
+        id: 'status-moved', 
+        label: '已移动',
+        title: '已移动', 
+        desc: 'statusType: moved',
         type: 'node-icon',
-        statusType: 'external',
+        statusType: 'moved',
         node_type: 'app',
+        showIcon: true,
+        icon: '/g6-icons/moved.svg',
+        comboId: 'group-status',
         data: { status: 'normal' }
       },
       
-      // 第四组：角标展示
-      { 
-        id: 'badges-top', 
-        title: '右上角标', 
-        desc: '右上角标: 99',
-        type: 'node-icon',
-        node_type: 'app',
-        statusType: 'normal',
-        data: { 
-          status: 'normal',
-          right_top_number: 99
-        },
-        rightTop: { show: true }
-      },
-      { 
-        id: 'badges-bottom', 
-        title: '右下角标', 
-        desc: '右下角标: 5',
-        type: 'node-icon',
-        node_type: 'app',
-        statusType: 'normal',
-        data: { 
-          status: 'normal',
-          right_bottom_number: 5
-        },
-        rightBottom: { show: true }
-      },
+      // 3. 角标展示（合并到一个节点）- 不在组里
       { 
         id: 'badges-both', 
+        label: '双角标',
         title: '双角标', 
-        desc: '双角标: 99/5',
+        desc: '右上角标: 99, 右下角标: 5',
         type: 'node-icon',
-        node_type: 'db',
-        statusType: 'warning',
+        node_type: 'app',
+        statusType: 'normal',
+        showIcon: true,
+        icon: '/g6-icons/server-normal.svg',
         data: { 
           status: 'normal',
           right_top_number: 99,
@@ -262,316 +347,305 @@ function loadSampleData() {
         rightBottom: { show: true }
       },
       
-      // 第五组：中心内容展示
+      // 4. 中心内容（合并展示：数字+文字+图标）- 不在组里
       { 
-        id: 'center-number', 
-        title: '中心数字', 
-        desc: '中心数字: 10',
+        id: 'center-all', 
+        label: '中心内容',
+        title: '中心内容', 
+        desc: '中心数字: 10, 文字: CORE, 图标',
         type: 'node-icon',
         node_type: 'server',
-        statusType: 'normal',
-        data: { 
-          status: 'normal',
-          center_number: 10
-        },
-        center: { show: true, showIcon: false, text: undefined }
-      },
-      { 
-        id: 'center-text', 
-        title: '中心文字', 
-        desc: '中心文字: CORE',
-        type: 'node-icon',
-        node_type: 'server',
-        statusType: 'normal',
-        data: { 
-          status: 'normal'
-        },
-        center: { show: true, showIcon: false, text: 'CORE' }
-      },
-      { 
-        id: 'center-number-text', 
-        title: '数字+文字', 
-        desc: '中心数字: 10 + 文字: CORE',
-        type: 'node-icon',
-        node_type: 'server',
-        statusType: 'normal',
-        data: { 
-          status: 'normal',
-          center_number: 10
-        },
-        center: { show: true, showIcon: false, text: 'CORE' }
-      },
-      { 
-        id: 'center-icon', 
-        title: '中心图标', 
-        desc: '中心图标（带数字）',
-        type: 'node-icon',
-        node_type: 'server',
-        statusType: 'normal',
-        showIcon: false, // 隐藏节点类型图标
-        data: { 
-          status: 'normal',
-          center_number: 5
-        },
-        center: { show: true, showIcon: true }
-      },
-      
-      // 第六组：节点类型图标展示
-      { 
-        id: 'icon-show', 
-        title: '显示节点图标', 
-        desc: 'showIcon: true (显示节点类型图标)',
-        type: 'node-icon',
-        node_type: 'app',
-        statusType: 'normal',
-        showIcon: true,
-        data: { status: 'normal' }
-      },
-      { 
-        id: 'icon-hide', 
-        title: '隐藏节点图标', 
-        desc: 'showIcon: false (隐藏节点类型图标)',
-        type: 'node-icon',
-        node_type: 'app',
         statusType: 'normal',
         showIcon: false,
+        data: { 
+          status: 'normal',
+          center_number: 10
+        },
+        center: { show: true, showIcon: true, text: 'CORE' }
+      },
+      
+      // 5. 图标类型（部分在组里，部分不在组里）
+      { 
+        id: 'icon-web', 
+        label: 'Web',
+        title: 'Web图标', 
+        desc: 'icon: "/g6-icons/web-normal.svg"',
+        type: 'node-icon',
+        node_type: 'app',
+        statusType: 'normal',
+        icon: '/g6-icons/web-normal.svg',
+        showIcon: true,
+        comboId: 'group-icons',
+        data: { status: 'normal' }
+      },
+      { 
+        id: 'icon-phone', 
+        label: 'Phone',
+        title: 'Phone图标', 
+        desc: 'icon: "/g6-icons/phone-normal.svg"',
+        type: 'node-icon',
+        node_type: 'app',
+        statusType: 'normal',
+        icon: '/g6-icons/phone-normal.svg',
+        showIcon: true,
+        comboId: 'group-icons',
+        data: { status: 'normal' }
+      },
+      { 
+        id: 'icon-default', 
+        label: 'Default',
+        title: 'Default图标', 
+        desc: 'icon: "/g6-icons/server-normal.svg"',
+        type: 'node-icon',
+        node_type: 'app',
+        statusType: 'normal',
+        icon: '/g6-icons/server-normal.svg',
+        showIcon: true,
+        data: { status: 'normal' }
+      },
+      { 
+        id: 'icon-default2', 
+        label: 'Default2',
+        title: 'Default2图标', 
+        desc: 'icon: "/g6-icons/server2-normal.svg"',
+        type: 'node-icon',
+        node_type: 'app',
+        statusType: 'normal',
+        icon: '/g6-icons/server2-normal.svg',
+        showIcon: true,
+        data: { status: 'normal' }
+      },
+      { 
+        id: 'icon-warning', 
+        label: 'Warning',
+        title: 'Warning图标', 
+        desc: 'icon: "/g6-icons/server-warning.svg"',
+        type: 'node-icon',
+        node_type: 'app',
+        statusType: 'normal',
+        icon: '/g6-icons/server-warning.svg',
+        showIcon: true,
+        data: { status: 'normal' }
+      },
+      { 
+        id: 'icon-abnormal', 
+        label: 'Abnormal',
+        title: 'Abnormal图标', 
+        desc: 'icon: "/g6-icons/server-abnormal.svg"',
+        type: 'node-icon',
+        node_type: 'app',
+        statusType: 'normal',
+        icon: '/g6-icons/server-abnormal.svg',
+        showIcon: true,
         data: { status: 'normal' }
       },
       
-      // 第七组：不同图标类型展示
+      // 6. Combo 节点组（只保留一个）
       { 
-        id: 'icon-service-web', 
-        title: 'Web图标', 
-        desc: 'service_type: 10 (web图标)',
+        id: 'combo-node-1', 
+        label: 'Combo节点1',
+        title: 'Combo节点1', 
+        desc: 'comboId: combo-group-1',
         type: 'node-icon',
         node_type: 'app',
         statusType: 'normal',
-        service_type: 10,
+        comboId: 'combo-group-1',
         showIcon: true,
+        icon: '/g6-icons/server-normal.svg',
         data: { status: 'normal' }
       },
       { 
-        id: 'icon-service-phone', 
-        title: 'Phone图标', 
-        desc: 'service_type: 20/30 (phone图标)',
+        id: 'combo-node-2', 
+        label: 'Combo节点2',
+        title: 'Combo节点2', 
+        desc: 'comboId: combo-group-1',
         type: 'node-icon',
         node_type: 'app',
         statusType: 'normal',
-        service_type: 20,
+        comboId: 'combo-group-1',
         showIcon: true,
+        icon: '/g6-icons/server2-normal.svg',
         data: { status: 'normal' }
-      },
+      }
+    ]
+    
+    // Combo 配置（节点组）
+    const combos = [
       { 
-        id: 'icon-user', 
-        title: '用户图标', 
-        desc: 'statusType: normal, user图标',
-        type: 'node-icon',
-        node_type: 'app',
+        id: 'group-basic', 
+        title: '基础节点',
+        type: 'custom-combo',
         statusType: 'normal',
-        is_user: true,
-        showIcon: true,
-        data: { status: 'normal' }
+        collapsed: false,
+        padding: [60, 60, 60, 60]
       },
       { 
-        id: 'icon-external', 
-        title: '外部图标', 
-        desc: 'statusType: external',
-        type: 'node-icon',
-        node_type: 'app',
-        statusType: 'external',
-        showIcon: true,
-        data: { status: 'normal' }
+        id: 'group-status', 
+        title: '状态类型',
+        type: 'custom-combo',
+        statusType: 'normal',
+        collapsed: false,
+        padding: [60, 60, 60, 60]
       },
       { 
-        id: 'icon-disabled', 
-        title: '禁用图标', 
-        desc: 'statusType: disabled (deleted图标)',
-        type: 'node-icon',
-        node_type: 'app',
-        statusType: 'disabled',
-        showIcon: true,
-        data: { status: 'normal' }
+        id: 'group-icons', 
+        title: '图标类型',
+        type: 'custom-combo',
+        statusType: 'normal',
+        collapsed: false,
+        padding: [60, 60, 60, 60]
       },
       { 
-        id: 'icon-default-warning', 
-        title: '警告图标', 
-        desc: 'statusType: warning, default图标',
-        type: 'node-icon',
-        node_type: 'server',
-        statusType: 'warning',
-        showIcon: true,
-        data: { status: 'warning' }
+        id: 'combo-group-1', 
+        title: 'Combo组',
+        type: 'custom-combo',
+        statusType: 'normal',
+        collapsed: false,
+        padding: [80, 80, 80, 80]
       },
       { 
-        id: 'icon-default-abnormal', 
-        title: '异常图标', 
-        desc: 'statusType: abnormal, default图标',
-        type: 'node-icon',
-        node_type: 'server',
-        statusType: 'abnormal',
-        showIcon: true,
-        data: { status: 'error' }
+        id: 'group-empty', 
+        title: '空组',
+        type: 'custom-combo',
+        statusType: 'normal',
+        collapsed: false,
+        padding: [60, 60, 60, 60]
       }
     ]
 
-  // 创建清晰的边连接，展示不同边类型
+  // 创建分支结构的边连接，避免形成一条线
   const edges = [
-    // 节点类型组：从左到右连接，展示不同边类型
+    // 以基础节点为中心，形成分支结构
     { 
-      id: 'edge-line',
+      id: 'edge-center-1',
       source: 'node-type-app',
-      target: 'node-type-sys',
-      type: 'line-circle-run',
-      label: 'line'
+      target: 'shape-hexagonal',
+      type: 'line-circle-run'
     },
     { 
-      id: 'edge-cubic',
-      source: 'node-type-sys',
-      target: 'node-type-db',
-      type: 'cubic-circle-run',
-      label: 'cubic'
+      id: 'edge-center-2',
+      source: 'node-type-app',
+      target: 'status-normal',
+      type: 'line-circle-run'
     },
     { 
-      id: 'edge-cubic-v',
-      source: 'node-type-db',
-      target: 'node-type-server',
-      type: 'cubic-v-circle-run',
-      label: 'cubic-v'
+      id: 'edge-center-3',
+      source: 'node-type-app',
+      target: 'badges-both',
+      type: 'line-circle-run'
+    },
+    { 
+      id: 'edge-center-4',
+      source: 'node-type-app',
+      target: 'icon-web',
+      type: 'line-circle-run'
     },
     
-    // 形状组：连接形状节点
-    { 
-      id: 'edge-shape',
-      source: 'shape-hexagonal',
-      target: 'shape-ellipse',
-      type: 'cubic-h-circle-run',
-      label: 'cubic-h'
-    },
-    
-    // 状态流转链：正常 -> 警告 -> 异常 -> 自环
+    // 状态组分支连接
     { 
       id: 'edge-status-1',
       source: 'status-normal',
       target: 'status-warning',
-      type: 'quadratic-circle-run',
-      label: 'quadratic'
+      type: 'line-circle-run'
     },
     { 
       id: 'edge-status-2',
+      source: 'status-normal',
+      target: 'status-abnormal',
+      type: 'line-circle-run'
+    },
+    { 
+      id: 'edge-status-3',
       source: 'status-warning',
-      target: 'status-abnormal',
-      type: 'cubic-v-circle-run',
-      label: ''
+      target: 'status-special',
+      type: 'line-circle-run'
     },
     { 
-      id: 'edge-loop',
+      id: 'edge-status-4',
       source: 'status-abnormal',
-      target: 'status-abnormal',
-      type: 'loop-circle-run',
-      label: 'loop',
-      loopCfg: {
-        position: 'top',
-        dist: 60,
-        clockwise: true
-      }
+      target: 'status-moved',
+      type: 'line-circle-run'
     },
     
-    // 角标组：连接展示
+    // 功能特性分支
     { 
-      id: 'edge-badge-1',
-      source: 'badges-top',
-      target: 'badges-both',
-      type: 'line-circle-run',
-      label: ''
-    },
-    { 
-      id: 'edge-badge-2',
-      source: 'badges-bottom',
-      target: 'badges-both',
-      type: 'line-circle-run',
-      label: ''
+      id: 'edge-feature-1',
+      source: 'badges-both',
+      target: 'center-all',
+      type: 'line-circle-run'
     },
     
-    // 中心内容组
-    { 
-      id: 'edge-center-1',
-      source: 'center-number',
-      target: 'center-text',
-      type: 'line-circle-run',
-      label: ''
-    },
-    { 
-      id: 'edge-center-2',
-      source: 'center-text',
-      target: 'center-number-text',
-      type: 'line-circle-run',
-      label: ''
-    },
-    { 
-      id: 'edge-center-3',
-      source: 'center-number-text',
-      target: 'center-icon',
-      type: 'line-circle-run',
-      label: ''
-    },
-    
-    // 图标组
-    { 
-      id: 'edge-icon',
-      source: 'icon-show',
-      target: 'icon-hide',
-      type: 'line-circle-run',
-      label: ''
-    },
-    
-    // 图标类型组：连接不同类型的图标
+    // 图标类型分支连接
     { 
       id: 'edge-icon-1',
-      source: 'icon-service-web',
-      target: 'icon-service-phone',
-      type: 'line-circle-run',
-      label: ''
+      source: 'icon-web',
+      target: 'icon-phone',
+      type: 'line-circle-run'
     },
     { 
       id: 'edge-icon-2',
-      source: 'icon-service-phone',
-      target: 'icon-user',
-      type: 'line-circle-run',
-      label: ''
+      source: 'icon-web',
+      target: 'icon-default',
+      type: 'line-circle-run'
     },
     { 
       id: 'edge-icon-3',
-      source: 'icon-user',
-      target: 'icon-external',
-      type: 'line-circle-run',
-      label: ''
+      source: 'icon-default',
+      target: 'icon-default2',
+      type: 'line-circle-run'
     },
     { 
       id: 'edge-icon-4',
-      source: 'icon-external',
-      target: 'icon-disabled',
-      type: 'line-circle-run',
-      label: ''
+      source: 'icon-default',
+      target: 'icon-warning',
+      type: 'line-circle-run'
     },
     { 
       id: 'edge-icon-5',
-      source: 'icon-disabled',
-      target: 'icon-default-warning',
-      type: 'line-circle-run',
-      label: ''
+      source: 'icon-warning',
+      target: 'icon-abnormal',
+      type: 'line-circle-run'
+    },
+    
+    // Combo 节点组内部连接
+    { 
+      id: 'edge-combo-1',
+      source: 'combo-node-1',
+      target: 'combo-node-2',
+      type: 'line-circle-run'
+    },
+    
+    // 跨组连接，形成交叉调用
+    { 
+      id: 'edge-cross-1',
+      source: 'shape-hexagonal',
+      target: 'status-warning',
+      type: 'line-circle-run'
     },
     { 
-      id: 'edge-icon-6',
-      source: 'icon-default-warning',
-      target: 'icon-default-abnormal',
-      type: 'line-circle-run',
-      label: ''
+      id: 'edge-cross-2',
+      source: 'center-all',
+      target: 'icon-phone',
+      type: 'line-circle-run'
+    },
+    { 
+      id: 'edge-cross-3',
+      source: 'icon-abnormal',
+      target: 'combo-node-1',
+      type: 'line-circle-run'
+    },
+    { 
+      id: 'edge-cross-4',
+      source: 'status-special',
+      target: 'icon-default2',
+      type: 'line-circle-run'
     }
   ]
 
   // 直接设置 G6 格式的数据
   graphData.nodes = nodes
   graphData.edges = edges
+  graphData.combos = combos
   
   show.value = true
 }
@@ -600,6 +674,36 @@ function toggleStatus() {
            }
        }
    })
+}
+
+function changeLayout() {
+  // 切换布局后重新渲染 G6 组件
+  if (lcG6.value && show.value) {
+    try {
+      // 先更新布局配置
+      const layoutConfig = toRaw(getLayoutConfig(currentLayout.value))
+      const graph = lcG6.value.getGraph()
+      
+      if (graph) {
+        // 更新布局
+        graph.updateLayout(layoutConfig)
+      }
+      
+      // 重新设置数据以触发重新渲染
+      setTimeout(() => {
+        if (lcG6.value && graphData.nodes.length > 0) {
+          // 使用 setData 重新渲染整个组件
+          lcG6.value.setData({
+            nodes: [...graphData.nodes],
+            edges: [...graphData.edges],
+            combos: [...graphData.combos]
+          })
+        }
+      }, 50)
+    } catch (error) {
+      console.error('Layout update error:', error)
+    }
+  }
 }
 
 function onEvent(type, e) {
