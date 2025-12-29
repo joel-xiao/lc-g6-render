@@ -1,13 +1,5 @@
 <template>
   <div class="lc-g6-demo">
-    <div class="demo-header">
-      <h2>LcG6 组件演示</h2>
-      <div class="demo-controls">
-        <el-button size="small" @click="clearData">清空数据</el-button>
-        <el-button size="small" @click="changeLayout">切换布局</el-button>
-      </div>
-    </div>
-
     <div class="demo-content">
       <LcG6
         v-if="show"
@@ -77,9 +69,6 @@ const graphData = reactive({
   edges: [],
   combos: []
 })
-
-const layouts = ['dagre-tbt', 'force', 'circular', 'radial']
-let layoutIndex = 0
 
 const g6Options = computed(() => {
   return {
@@ -663,27 +652,6 @@ function loadSampleData() {
   })
 }
 
-function clearData() {
-  graphData.nodes = []
-  graphData.edges = []
-  graphData.combos = []
-  show.value = false
-}
-
-function changeLayout() {
-  layoutIndex = (layoutIndex + 1) % layouts.length
-  currentLayout.value = layouts[layoutIndex]
-  
-  if (lcG6.value) {
-    const g6 = lcG6.value.getGraph()
-    if (g6) {
-      g6.updateLayout({
-        type: currentLayout.value
-      })
-    }
-  }
-}
-
 // 创建 Mock 节点数据
 function createMockNodeData(mockNodeId, index, type, node_depth) {
   return {
@@ -899,28 +867,6 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   background: #f5f5f5;
-
-  .demo-header {
-    padding: 16px 20px;
-    background: #fff;
-    border-bottom: 1px solid #e8e8e8;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-    h2 {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 500;
-      color: #333;
-    }
-
-    .demo-controls {
-      display: flex;
-      gap: 10px;
-    }
-  }
 
   .demo-content {
     flex: 1;
