@@ -67,8 +67,9 @@ const g6Options = computed(() => {
     layout: {
       type: 'grid',
       begin: [50, 50],
-      width: 600,
-      height: 400
+      width: 800,
+      height: 600,
+      cols: 6
     },
     defaultNode: {
       type: 'node-icon',
@@ -84,11 +85,10 @@ const g6Options = computed(() => {
       }
     },
     defaultEdge: {
-      type: 'cubic-horizontal',
+      type: 'cubic-v-circle-run',
       style: {
-        stroke: '#A3B1BF',
-        lineWidth: 2,
-        endArrow: true
+        stroke: '#6AC9FF',
+        lineWidth: 2
       }
     },
     fitView: true
@@ -99,66 +99,242 @@ function loadSampleData() {
   const rawData = {
     props: ['id'], // Explicitly use 'id' for this demo
     nodes: [
+      // 节点类型展示
       { 
-        id: 'basic', 
-        label: '基础节点', 
-        desc: 'Standard Icon & Label',
+        id: 'node-type-app', 
+        label: '节点类型: app', 
+        desc: 'node_type: app',
+        node_type: 'app',
+        statusType: 'normal',
+        data: { status: 'normal' }
+      },
+      { 
+        id: 'node-type-sys', 
+        label: '节点类型: sys', 
+        desc: 'node_type: sys',
+        node_type: 'sys',
+        statusType: 'normal',
+        data: { status: 'normal' }
+      },
+      { 
+        id: 'node-type-db', 
+        label: '节点类型: db', 
+        desc: 'node_type: db',
+        node_type: 'db',
+        statusType: 'normal',
+        data: { status: 'normal' }
+      },
+      { 
+        id: 'node-type-server', 
+        label: '节点类型: server', 
+        desc: 'node_type: server',
+        node_type: 'server',
+        statusType: 'normal',
+        data: { status: 'normal' }
+      },
+      
+      // 节点形状展示
+      { 
+        id: 'shape-hexagonal', 
+        label: '形状: 六边形', 
+        desc: 'shape: hexagonal-polygon',
+        node_type: 'sys',
+        shape: 'hexagonal-polygon',
+        statusType: 'normal',
+        data: { status: 'normal' }
+      },
+      { 
+        id: 'shape-ellipse', 
+        label: '形状: 椭圆', 
+        desc: 'shape: ellipse',
+        node_type: 'db',
+        shape: 'ellipse',
+        statusType: 'normal',
+        data: { status: 'normal' }
+      },
+      
+      // 状态类型（光环）展示
+      { 
+        id: 'status-normal', 
+        label: '状态: 正常', 
+        desc: 'statusType: normal (Green Halo)',
+        statusType: 'normal',
         node_type: 'app',
         data: { status: 'normal' }
       },
       { 
-        id: 'status-halo', 
-        label: '状态光环', 
-        desc: 'Status: Abnormal (Red Halo)',
-        statusType: 'abnormal', // Triggers 'state-halo'
+        id: 'status-warning', 
+        label: '状态: 警告', 
+        desc: 'statusType: warning (Yellow Halo)',
+        statusType: 'warning',
         node_type: 'app',
-        data: { status: 'error' } 
+        data: { status: 'warning' }
       },
       { 
-        id: 'badges', 
-        label: '角标展示', 
-        desc: 'Right Top/Bottom Badges',
+        id: 'status-abnormal', 
+        label: '状态: 异常', 
+        desc: 'statusType: abnormal (Red Halo)',
+        statusType: 'abnormal',
+        node_type: 'app',
+        data: { status: 'error' }
+      },
+      { 
+        id: 'status-disabled', 
+        label: '状态: 禁用', 
+        desc: 'statusType: disabled (Gray)',
+        statusType: 'disabled',
+        node_type: 'app',
+        data: { status: 'normal' }
+      },
+      { 
+        id: 'status-external', 
+        label: '状态: 外部', 
+        desc: 'statusType: external',
+        statusType: 'external',
+        node_type: 'app',
+        data: { status: 'normal' }
+      },
+      
+      // 角标展示
+      { 
+        id: 'badges-top', 
+        label: '右上角标', 
+        desc: 'Right Top Badge: 99',
+        node_type: 'app',
+        statusType: 'normal',
+        data: { 
+          status: 'normal',
+          right_top_number: 99
+        },
+        rightTop: { show: true }
+      },
+      { 
+        id: 'badges-bottom', 
+        label: '右下角标', 
+        desc: 'Right Bottom Badge: 5',
+        node_type: 'app',
+        statusType: 'normal',
+        data: { 
+          status: 'normal',
+          right_bottom_number: 5
+        },
+        rightBottom: { show: true }
+      },
+      { 
+        id: 'badges-both', 
+        label: '双角标', 
+        desc: 'Both Badges: 99/5',
         node_type: 'db',
-        prop: 'id',
+        statusType: 'warning',
         data: { 
           status: 'normal',
           right_top_number: 99,
           right_bottom_number: 5
         },
-         rightTop: { show: true },
-         rightBottom: { show: true }
+        rightTop: { show: true },
+        rightBottom: { show: true }
+      },
+      
+      // 中心内容展示
+      { 
+        id: 'center-number', 
+        label: '中心数字', 
+        desc: 'Center Number: 10',
+        node_type: 'server',
+        statusType: 'normal',
+        data: { 
+          status: 'normal',
+          center_number: 10
+        },
+        center: { show: true }
       },
       { 
-        id: 'center-group', 
-        label: '中心内容', 
-        desc: 'Center Number & Icon Hidden',
+        id: 'center-text', 
+        label: '中心文字', 
+        desc: 'Center Text: CORE',
         node_type: 'server',
+        statusType: 'normal',
         data: { 
           status: 'normal',
           center_number: 'CORE'
         },
-        center: { show: true, showIcon: false } // Hide icon, show text/number
+        center: { show: true, showIcon: false }
       },
+      
+      // 图标展示
       { 
-        id: 'multi-service', 
-        label: '多服务图标', 
-        desc: 'service_type="mq,db"',
-        service_type: 'mq,db', // Triggers multi-icon logic
+        id: 'icon-show', 
+        label: '显示图标', 
+        desc: 'showIcon: true',
         node_type: 'app',
+        statusType: 'normal',
+        showIcon: true,
         data: { status: 'normal' }
       },
-      {
-        id: 'arrows',
-        label: '上下箭头',
-        desc: 'Arrow Shapes (Top/Bottom)',
+      { 
+        id: 'icon-hide', 
+        label: '隐藏图标', 
+        desc: 'showIcon: false',
         node_type: 'app',
-        data: { status: 'warning' }
-        // getRegisterNode adds 'arrow' shapes by default
+        statusType: 'normal',
+        showIcon: false,
+        data: { status: 'normal' }
       }
     ],
-    links: []
+    links: [
+      // 边类型展示
+      { 
+        id: 'edge-line',
+        from: { id: 'node-type-app' },
+        to: { id: 'node-type-sys' },
+        type: 'line-circle-run',
+        label: 'line-circle-run'
+      },
+      { 
+        id: 'edge-cubic',
+        from: { id: 'node-type-sys' },
+        to: { id: 'node-type-db' },
+        type: 'cubic-circle-run',
+        label: 'cubic-circle-run'
+      },
+      { 
+        id: 'edge-cubic-v',
+        from: { id: 'node-type-db' },
+        to: { id: 'node-type-server' },
+        type: 'cubic-v-circle-run',
+        label: 'cubic-v-circle-run'
+      },
+      { 
+        id: 'edge-cubic-h',
+        from: { id: 'status-normal' },
+        to: { id: 'status-warning' },
+        type: 'cubic-h-circle-run',
+        label: 'cubic-h-circle-run'
+      },
+      { 
+        id: 'edge-quadratic',
+        from: { id: 'status-warning' },
+        to: { id: 'status-abnormal' },
+        type: 'quadratic-circle-run',
+        label: 'quadratic-circle-run'
+      },
+      { 
+        id: 'edge-loop',
+        from: { id: 'status-abnormal' },
+        to: { id: 'status-abnormal' },
+        type: 'loop-circle-run',
+        label: 'loop-circle-run'
+      }
+    ]
   }
 
+  // 处理边数据，添加 type 字段
+  rawData.links.forEach(link => {
+    if (link.type && !link.link_type) {
+      link.link_type = link.type
+    }
+  })
+  
   const formatted = toG6Data(rawData)
   
   // Apply specific styles that might be lost in simple toG6Data or need manual override
@@ -169,9 +345,32 @@ function loadSampleData() {
     // Pass high-level props to model for renderers to pick up
     const original = rawData.nodes.find(n => n.id === node.id);
     if (original) {
-        Object.assign(node, original); 
+        // 保留所有原始属性
+        if (original.shape) node.shape = original.shape
+        if (original.statusType) node.statusType = original.statusType
+        if (original.showIcon !== undefined) node.showIcon = original.showIcon
+        if (original.rightTop) node.rightTop = original.rightTop
+        if (original.rightBottom) node.rightBottom = original.rightBottom
+        if (original.center) node.center = original.center
     }
-  });
+  })
+  
+  // 处理边类型
+  formatted.edges.forEach(edge => {
+    const original = rawData.links.find(l => {
+      const edgeSource = edge.source
+      const edgeTarget = edge.target
+      const linkFromId = typeof rawData.links[0].from === 'object' ? rawData.links.find(link => {
+        const formattedNode = formatted.nodes.find(n => n.id === (link.from.id || link.from.appsysid))
+        return formattedNode && formattedNode.id === edgeSource
+      })?.from?.id : rawData.links[0].from
+      // 简化处理：直接从 rawData 中查找对应的 link
+      return false // 暂时不处理，因为 edge 的 source/target 已经转换了
+    })
+    if (original?.type) {
+      edge.type = original.type
+    }
+  })
 
   graphData.nodes = formatted.nodes
   graphData.edges = formatted.edges
