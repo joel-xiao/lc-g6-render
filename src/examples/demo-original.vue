@@ -60,15 +60,17 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, nextTick } from 'vue'
 import LcG6 from '../index.vue'
 import LcLoadingIcon from '../lc-loading-icon.vue'
-import { toG6Data } from '../compossible/data-format-methods.js'
+import { toG6Data, calcTopologyDepth } from '../compossible/data-format-methods.js'
 
 const show = ref(false)
 const lcG6 = ref(null)
 const currentZoom = ref(1)
 const currentLayout = ref('dagre-tbt')
+const centerNodeAppsysid = 'sys-gateway' // 中心节点的appsysid
+const centerNodeId = ref('sys-gateway') // 中心节点ID（转换后的ID，会在loadSampleData中更新）
 
 const graphData = reactive({
   nodes: [],
@@ -121,8 +123,10 @@ const g6Options = computed(() => {
       }
     },
     layout: {
-      type: currentLayout.value
+      type: 'dagre-tbt'
     },
+    activeNodes: [centerNodeId.value],
+    centerNodes: [centerNodeId.value],
     defaultNode: {
       type: 'node-icon',
       shape: 'hexagonal-polygon',
@@ -145,11 +149,106 @@ const g6Options = computed(() => {
   }
 })
 
+// 计算拓扑深度
+function calculateTopologyDepth(nodes, links, centerId) {
+  // 创建节点映射
+  const nodeMap = new Map()
+  nodes.forEach(node => {
+    nodeMap.set(node.appsysid, node)
+    node.depth = undefined
+    node.chain_depth = undefined
+  })
+
+  // 创建边映射 - 出边和入边
+  const outEdgesMap = new Map() // source -> [links]
+  const inEdgesMap = new Map()  // target -> [links]
+  
+  links.forEach(link => {
+    const fromId = link.from.appsysid
+    const toId = link.to.appsysid
+    
+    if (!outEdgesMap.has(fromId)) outEdgesMap.set(fromId, [])
+    if (!inEdgesMap.has(toId)) inEdgesMap.set(toId, [])
+    
+    outEdgesMap.get(fromId).push({ target: toId })
+    inEdgesMap.get(toId).push({ source: fromId })
+  })
+
+  // 设置中心节点
+  const centerNode = nodeMap.get(centerId)
+  if (centerNode) {
+    centerNode.depth = 0
+    centerNode.chain_depth = 0
+  }
+
+  // BFS 计算调出层（depth > 0）
+  const outQueue = [{ id: centerId, depth: 0 }]
+  const outVisited = new Set([centerId])
+  
+  while (outQueue.length > 0) {
+    const { id, depth } = outQueue.shift()
+    
+    if (outEdgesMap.has(id)) {
+      outEdgesMap.get(id).forEach(edge => {
+        const targetId = edge.target
+        if (!outVisited.has(targetId)) {
+          outVisited.add(targetId)
+          const targetNode = nodeMap.get(targetId)
+          if (targetNode) {
+            const newDepth = depth + 1
+            // 如果节点已经有depth且更小，保留更小的（更靠近中心）
+            if (targetNode.depth === undefined || targetNode.depth > newDepth) {
+              targetNode.depth = newDepth
+              targetNode.chain_depth = newDepth
+            }
+            outQueue.push({ id: targetId, depth: newDepth })
+          }
+        }
+      })
+    }
+  }
+
+  // BFS 计算调入层（depth < 0）
+  const inQueue = [{ id: centerId, depth: 0 }]
+  const inVisited = new Set([centerId])
+  
+  while (inQueue.length > 0) {
+    const { id, depth } = inQueue.shift()
+    
+    if (inEdgesMap.has(id)) {
+      inEdgesMap.get(id).forEach(edge => {
+        const sourceId = edge.source
+        if (!inVisited.has(sourceId)) {
+          inVisited.add(sourceId)
+          const sourceNode = nodeMap.get(sourceId)
+          if (sourceNode) {
+            const newDepth = depth - 1
+            // 如果节点已经有depth且更大（绝对值更小），保留更小的
+            if (sourceNode.depth === undefined || sourceNode.depth < newDepth) {
+              sourceNode.depth = newDepth
+              sourceNode.chain_depth = newDepth
+            }
+            inQueue.push({ id: sourceId, depth: newDepth })
+          }
+        }
+      })
+    }
+  }
+
+  // 确保所有节点都有 depth
+  nodes.forEach(node => {
+    if (node.depth === undefined) {
+      node.depth = 0
+      node.chain_depth = 0
+    }
+  })
+}
+
 function loadSampleData() {
   // 参考 system-topo-view-v2.vue 的数据格式
   // 使用 { nodes: [], links: [], props: [] } 格式，然后通过 toG6Data 转换
   const rawData = {
-    props: ['appsysid', 'appid', 'agentid', 'ip'],
+    props: ['appsysid'],
     nodes: [
       // 系统节点
       { 
@@ -169,9 +268,7 @@ function loadSampleData() {
           fail: 0,
           exception: 0,
           center_number: 2
-        },
-        depth: 0,
-        chain_depth: 0
+        }
       },
       { 
         appsysid: 'sys-gateway',
@@ -190,9 +287,7 @@ function loadSampleData() {
           fail: 0,
           exception: 1,
           center_number: 2
-        },
-        depth: 0,
-        chain_depth: 0
+        }
       },
       { 
         appsysid: 'sys-user',
@@ -211,9 +306,7 @@ function loadSampleData() {
           fail: 0,
           exception: 0,
           center_number: 2
-        },
-        depth: 0,
-        chain_depth: 0
+        }
       },
       { 
         appsysid: 'sys-order',
@@ -232,9 +325,7 @@ function loadSampleData() {
           fail: 1,
           exception: 2,
           center_number: 2
-        },
-        depth: 0,
-        chain_depth: 0
+        }
       },
       { 
         appsysid: 'sys-payment',
@@ -253,9 +344,7 @@ function loadSampleData() {
           fail: 0,
           exception: 0,
           center_number: 1
-        },
-        depth: 0,
-        chain_depth: 0
+        }
       },
       { 
         appsysid: 'sys-product',
@@ -274,9 +363,7 @@ function loadSampleData() {
           fail: 0,
           exception: 0,
           center_number: 1
-        },
-        depth: 0,
-        chain_depth: 0
+        }
       },
       { 
         appsysid: 'sys-cache',
@@ -295,9 +382,7 @@ function loadSampleData() {
           fail: 0,
           exception: 0,
           center_number: 2
-        },
-        depth: 0,
-        chain_depth: 0
+        }
       },
       { 
         appsysid: 'sys-db',
@@ -316,9 +401,7 @@ function loadSampleData() {
           fail: 0,
           exception: 0,
           center_number: 3
-        },
-        depth: 0,
-        chain_depth: 0
+        }
       }
     ],
     links: [
@@ -540,13 +623,44 @@ function loadSampleData() {
     ]
   }
 
+  // 计算拓扑深度
+  calculateTopologyDepth(rawData.nodes, rawData.links, centerNodeAppsysid)
+  
+  // 确保中心节点在数组顶部
+  const centerIndex = rawData.nodes.findIndex(node => node.appsysid === centerNodeAppsysid)
+  if (centerIndex > 0) {
+    const centerNode = rawData.nodes[centerIndex]
+    rawData.nodes.splice(centerIndex, 1)
+    rawData.nodes.unshift(centerNode)
+  }
+
+  // 计算拓扑深度（处理数组形式的depth）
+  calcTopologyDepth(rawData)
+
+  // 保存原始数据，用于后续展开节点
+  originalRawData = rawData
+  
   // 通过 toG6Data 转换数据格式
   const formattedData = toG6Data(rawData)
   graphData.nodes = formattedData.nodes || []
   graphData.edges = formattedData.edges || []
   graphData.combos = formattedData.combos || []
 
+  // 找到转换后的中心节点ID（使用getJoinId生成的ID）
+  // 对于只有appsysid的情况，ID就是appsysid本身
+  const centerNode = formattedData.nodes.find(node => node.id === centerNodeAppsysid || node.props?.appsysid === centerNodeAppsysid)
+  if (centerNode) {
+    centerNodeId.value = centerNode.id
+  }
+
   show.value = true
+  
+  // 在下一个tick中激活节点
+  nextTick(() => {
+    if (lcG6.value) {
+      lcG6.value.activeNodes()
+    }
+  })
 }
 
 function clearData() {
@@ -570,16 +684,207 @@ function changeLayout() {
   }
 }
 
+// 创建 Mock 节点数据
+function createMockNodeData(mockNodeId, index, type, node_depth) {
+  return {
+    total: Math.floor(Math.random() * 5000) + 500,
+    dur: Math.floor(Math.random() * 100) + 5,
+    err: Math.floor(Math.random() * 5),
+    slow: Math.floor(Math.random() * 10),
+    frustrated: Math.floor(Math.random() * 3),
+    fail: Math.floor(Math.random() * 2),
+    exception: Math.floor(Math.random() * 3)
+  }
+}
+
+// 创建 Mock 节点
+function createMockNode(mockNodeId, index, type, node_depth) {
+  return {
+    appsysid: mockNodeId,
+    id: mockNodeId,
+    app_name: `Mock节点 ${index + 1} (${type === 'out' ? '调出' : '调入'})`,
+    node_type: 'sys',
+    statusType: Math.random() > 0.8 ? 'warning' : 'normal',
+    shape: 'hexagonal-polygon',
+    showIcon: false,
+    center: { text: '应用' },
+    data: {
+      total: Math.floor(Math.random() * 10000) + 1000,
+      dur: Math.floor(Math.random() * 200) + 10,
+      err: Math.floor(Math.random() * 10),
+      slow: Math.floor(Math.random() * 20),
+      frustrated: Math.floor(Math.random() * 5),
+      fail: Math.floor(Math.random() * 3),
+      exception: Math.floor(Math.random() * 5),
+      center_number: 0
+    },
+    depth: type === 'out' ? node_depth : -node_depth,
+    chain_depth: type === 'out' ? node_depth : -node_depth
+  }
+}
+
+// 从原始数据创建节点
+function createNodeFromTemplate(templateNode, targetAppsysid, node_depth, type) {
+  return {
+    ...templateNode,
+    appsysid: targetAppsysid,
+    id: targetAppsysid,
+    depth: type === 'out' ? node_depth : -node_depth,
+    chain_depth: type === 'out' ? node_depth : -node_depth
+  }
+}
+
+// 创建关联链路
+function createLink(sourceId, targetId, linkType, linkData) {
+  return {
+    from: { appsysid: sourceId },
+    to: { appsysid: targetId },
+    link_type: linkType || 'sys',
+    data: linkData || {}
+  }
+}
+
+// 获取拓扑深度数据（用于展开下一层）- 动态创建和关联
+async function getTopologyDepthData(nodeId, type, model) {
+  const g6 = lcG6.value?.getGraph()
+  if (!g6) return { nodes: [], links: [], props: ['appsysid'] }
+
+  // 获取所有现有的节点ID，避免重复添加
+  const existingNodeIds = new Set(g6.getNodes().map(n => n.getModel().id))
+  const newNodes = []
+  const newLinks = []
+  
+  // 计算节点深度（参考 business-topo-v2.vue）
+  const node_depth = Math.abs(model.chain_depth || model.node_depth || 0) + 1
+  
+  // 从原始数据中查找相关的链接（如果有原始数据）
+  let relevantLinks = []
+  if (originalRawData?.links) {
+    relevantLinks = originalRawData.links.filter(link => {
+      const fromId = link.from.appsysid
+      const toId = link.to.appsysid
+      
+      if (type === 'out') {
+        return fromId === nodeId && !existingNodeIds.has(toId)
+      } else if (type === 'in') {
+        return toId === nodeId && !existingNodeIds.has(fromId)
+      }
+      return false
+    })
+  }
+  
+  // 如果没有找到相关链接，动态创建新的节点和链路
+  if (relevantLinks.length === 0) {
+    // Mock 创建 1-3 个新节点
+    const mockNodeCount = Math.floor(Math.random() * 3) + 1
+    
+    for (let i = 0; i < mockNodeCount; i++) {
+      const mockNodeId = `mock-${nodeId}-${type}-${node_depth}-${i}`
+      
+      if (!existingNodeIds.has(mockNodeId)) {
+        const newNode = createMockNode(mockNodeId, i, type, node_depth)
+        newNodes.push(newNode)
+        existingNodeIds.add(mockNodeId)
+        
+        // 创建关联链路
+        const linkData = createMockNodeData(mockNodeId, i, type, node_depth)
+        const sourceId = type === 'out' ? nodeId : mockNodeId
+        const targetId = type === 'out' ? mockNodeId : nodeId
+        newLinks.push(createLink(sourceId, targetId, 'sys', linkData))
+      }
+    }
+  } else {
+    // 使用原始数据中的链接
+    relevantLinks.forEach(link => {
+      const targetAppsysid = type === 'out' ? link.to.appsysid : link.from.appsysid
+      const sourceAppsysid = type === 'out' ? link.from.appsysid : link.to.appsysid
+      
+      if (!existingNodeIds.has(targetAppsysid)) {
+        const templateNode = originalRawData.nodes.find(n => n.appsysid === targetAppsysid)
+        
+        if (templateNode) {
+          const newNode = createNodeFromTemplate(templateNode, targetAppsysid, node_depth, type)
+          newNodes.push(newNode)
+          existingNodeIds.add(targetAppsysid)
+          
+          // 创建关联链路
+          newLinks.push(createLink(sourceAppsysid, targetAppsysid, link.link_type, link.data))
+        }
+      }
+    })
+  }
+  
+  // 如果只有一个节点，且是当前节点，清空数据（参考 business-topo-v2.vue）
+  if (newLinks.length === 0 && newNodes.length === 1 && newNodes[0].appsysid === nodeId) {
+    return { nodes: [], links: [], props: ['appsysid'] }
+  }
+  
+  return {
+    nodes: newNodes,
+    links: newLinks,
+    props: ['appsysid']
+  }
+}
+
+// 辅助函数：从原始数据中查找节点
+let originalRawData = null
+function findNodeByAppsysid(appsysid) {
+  if (!originalRawData) return null
+  return originalRawData.nodes.find(n => n.appsysid === appsysid)
+}
+
 function onEvent(eventType, e) {
   console.log('G6 Event:', eventType, e)
   
   if (eventType === 'node:click') {
-    const model = e.item.getModel()
-    console.log('Node clicked:', model)
+    onNodeClick(e)
   } else if (eventType === 'edge:click') {
     const model = e.item.getModel()
     console.log('Edge clicked:', model)
   }
+}
+
+async function onNodeClick(e) {
+  const g6 = lcG6.value
+  if (!g6) return
+  
+  const model = e.item.getModel()
+  
+  // 检查是否是展开/折叠事件
+  if (e.target?.get('event-name') === 'node-collapsed') {
+    const centerNodes = g6Options.value?.centerNodes || []
+    if (centerNodes.some(nodeId => nodeId === model.id)) return // 中心节点直接 return
+    
+    if (model.disabled_collapse) return
+    if (model[e.target.get('disabled-name')]) return
+    
+    // 参考文件中的逻辑：检查 collapsed-name 是否为 false（展开状态）
+    // 注意：此时状态已经被 event.js 翻转了，如果现在是 false（展开状态），说明之前是 true（折叠状态），需要展开
+    if (!model[e.target.get('collapsed-name')]) return
+    
+    const edgeType = e.target.get('node-edge-type')
+    
+    let data = null
+    if (edgeType === 'out-edges' || model.duplex_edge_type === 'out-edges') {
+      // 获取调出数据
+      data = await getTopologyDepthData(model.id, 'out', model)
+    } else if (edgeType === 'in-edges' || model.duplex_edge_type === 'in-edges') {
+      // 获取调入数据
+      data = await getTopologyDepthData(model.id, 'in', model)
+    }
+
+    data = toG6Data(data)
+    g6.addData({ e, node_edge_type: edgeType, model }, data)
+    
+    nextTick(() => {
+      g6.activeNodes()
+    })
+    
+    return
+  }
+  
+  // 其他节点点击事件
+  console.log('Node clicked:', model)
 }
 
 function onZoom(zoom) {
