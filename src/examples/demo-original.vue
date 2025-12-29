@@ -639,7 +639,7 @@ function loadSampleData() {
 
   // 保存原始数据，用于后续展开节点
   originalRawData = rawData
-  
+
   // 通过 toG6Data 转换数据格式
   const formattedData = toG6Data(rawData)
   graphData.nodes = formattedData.nodes || []

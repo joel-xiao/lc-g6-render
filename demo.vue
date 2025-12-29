@@ -21,7 +21,6 @@
 <script setup>
 import { ref, computed } from 'vue'
 import DemoOriginal from './src/examples/demo-original.vue'
-import DemoSystem from './src/examples/demo-system-topo.vue'
 import DemoApp from './src/examples/demo-app-topo.vue'
 import DemoBusiness from './src/examples/demo-business-topo.vue'
 
@@ -32,7 +31,6 @@ const currentTab = ref('features')
 const tabs = [
   { id: 'features', label: '功能展示 (Features)', new: true },
   { id: 'original', label: 'Original Demo (System)' },
-  { id: 'system', label: 'System Topo' },
   { id: 'app', label: 'Application Topo' },
   { id: 'business', label: 'Business Topo' }
 ]
@@ -41,7 +39,6 @@ const currentComponent = computed(() => {
   switch (currentTab.value) {
     case 'features': return DemoFeatures
     case 'original': return DemoOriginal
-    case 'system': return DemoSystem
     case 'app': return DemoApp
     case 'business': return DemoBusiness
     default: return DemoOriginal

@@ -69,7 +69,7 @@ const currentLayout = ref('dagre')
 const layouts = [
   { label: 'Dagre (层次)', value: 'dagre' },
   { label: 'Dagre-TBT', value: 'dagre-tbt' },
-  { label: 'Dagre-TGB', value: 'dagre-tgb' },
+  // { label: 'Dagre-TGB', value: 'dagre-tgb' },
   { label: 'Force (力导向)', value: 'force' },
   { label: 'Circular (环形)', value: 'circular' },
   { label: 'Radial (辐射)', value: 'radial' },
