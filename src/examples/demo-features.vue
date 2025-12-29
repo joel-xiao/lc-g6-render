@@ -495,6 +495,50 @@ function loadSampleData() {
       target: 'icon-hide',
       type: 'line-circle-run',
       label: ''
+    },
+    
+    // 图标类型组：连接不同类型的图标
+    { 
+      id: 'edge-icon-1',
+      source: 'icon-service-web',
+      target: 'icon-service-phone',
+      type: 'line-circle-run',
+      label: ''
+    },
+    { 
+      id: 'edge-icon-2',
+      source: 'icon-service-phone',
+      target: 'icon-user',
+      type: 'line-circle-run',
+      label: ''
+    },
+    { 
+      id: 'edge-icon-3',
+      source: 'icon-user',
+      target: 'icon-external',
+      type: 'line-circle-run',
+      label: ''
+    },
+    { 
+      id: 'edge-icon-4',
+      source: 'icon-external',
+      target: 'icon-disabled',
+      type: 'line-circle-run',
+      label: ''
+    },
+    { 
+      id: 'edge-icon-5',
+      source: 'icon-disabled',
+      target: 'icon-default-warning',
+      type: 'line-circle-run',
+      label: ''
+    },
+    { 
+      id: 'edge-icon-6',
+      source: 'icon-default-warning',
+      target: 'icon-default-abnormal',
+      type: 'line-circle-run',
+      label: ''
     }
   ]
 
