@@ -826,12 +826,8 @@ async function getTopologyDepthData(nodeId, type, model) {
   }
 }
 
-// 辅助函数：从原始数据中查找节点
+// 辅助变量：保存原始数据，用于后续展开节点
 let originalRawData = null
-function findNodeByAppsysid(appsysid) {
-  if (!originalRawData) return null
-  return originalRawData.nodes.find(n => n.appsysid === appsysid)
-}
 
 function onEvent(eventType, e) {
   console.log('G6 Event:', eventType, e)

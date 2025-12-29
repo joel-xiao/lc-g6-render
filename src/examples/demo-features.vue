@@ -4,8 +4,6 @@
       <h2>功能展示 (Feature Showcase)</h2>
       <div class="demo-controls">
         <el-button size="small" type="primary" @click="loadSampleData">重置数据</el-button>
-        <el-button size="small" @click="toggleAnimate">动画: {{ animate ? '开' : '关' }}</el-button>
-        <el-button size="small" @click="toggleStatus">切换状态</el-button>
         <el-select 
           v-model="currentLayout" 
           size="small" 
@@ -62,7 +60,6 @@ import LcG6 from '../index.vue'
 const show = ref(false)
 const lcG6 = ref(null)
 const currentZoom = ref(1)
-const animate = ref(false)
 const currentLayout = ref('dagre')
 
 // G6 支持的所有布局类型（移除不支持的布局）
@@ -246,6 +243,7 @@ function loadSampleData() {
         showIcon: true,
         icon: '/g6-icons/server-normal.svg',
         comboId: 'group-basic',
+        disabled_collapse: true, // 隐藏展开下一层按钮
         data: { status: 'normal' }
       },
       { 
@@ -260,6 +258,7 @@ function loadSampleData() {
         showIcon: true,
         icon: '/g6-icons/server2-normal.svg',
         comboId: 'group-basic',
+        disabled_collapse: true, // 隐藏展开下一层按钮
         data: { status: 'normal' }
       },
       
@@ -274,6 +273,7 @@ function loadSampleData() {
         node_type: 'server',
         showIcon: true,
         comboId: 'group-status',
+        disabled_collapse: true, // 隐藏展开下一层按钮
         data: { status: 'normal' }
       },
       { 
@@ -286,6 +286,7 @@ function loadSampleData() {
         node_type: 'server',
         showIcon: true,
         comboId: 'group-status',
+        disabled_collapse: true, // 隐藏展开下一层按钮
         data: { status: 'warning' }
       },
       { 
@@ -298,6 +299,7 @@ function loadSampleData() {
         node_type: 'server',
         showIcon: true,
         comboId: 'group-status',
+        disabled_collapse: true, // 隐藏展开下一层按钮
         data: { status: 'error' }
       },
       { 
@@ -311,6 +313,7 @@ function loadSampleData() {
         showIcon: true,
         icon: '/g6-icons/deleted.svg',
         comboId: 'group-status',
+        disabled_collapse: true, // 隐藏展开下一层按钮
         data: { status: 'normal' }
       },
       { 
@@ -324,6 +327,7 @@ function loadSampleData() {
         showIcon: true,
         icon: '/g6-icons/moved.svg',
         comboId: 'group-status',
+        disabled_collapse: true, // 隐藏展开下一层按钮
         data: { status: 'normal' }
       },
       
@@ -338,6 +342,7 @@ function loadSampleData() {
         statusType: 'normal',
         showIcon: true,
         icon: '/g6-icons/server-normal.svg',
+        disabled_collapse: true, // 隐藏展开下一层按钮
         data: { 
           status: 'normal',
           right_top_number: 99,
@@ -357,6 +362,7 @@ function loadSampleData() {
         node_type: 'server',
         statusType: 'normal',
         showIcon: false,
+        disabled_collapse: true, // 隐藏展开下一层按钮
         data: { 
           status: 'normal',
           center_number: 10
@@ -376,6 +382,7 @@ function loadSampleData() {
         icon: '/g6-icons/web-normal.svg',
         showIcon: true,
         comboId: 'group-icons',
+        disabled_collapse: true, // 隐藏展开下一层按钮
         data: { status: 'normal' }
       },
       { 
@@ -389,6 +396,7 @@ function loadSampleData() {
         icon: '/g6-icons/phone-normal.svg',
         showIcon: true,
         comboId: 'group-icons',
+        disabled_collapse: true, // 隐藏展开下一层按钮
         data: { status: 'normal' }
       },
       { 
@@ -401,6 +409,7 @@ function loadSampleData() {
         statusType: 'normal',
         icon: '/g6-icons/server-normal.svg',
         showIcon: true,
+        disabled_collapse: true, // 隐藏展开下一层按钮
         data: { status: 'normal' }
       },
       { 
@@ -413,6 +422,7 @@ function loadSampleData() {
         statusType: 'normal',
         icon: '/g6-icons/server2-normal.svg',
         showIcon: true,
+        disabled_collapse: true, // 隐藏展开下一层按钮
         data: { status: 'normal' }
       },
       { 
@@ -425,6 +435,7 @@ function loadSampleData() {
         statusType: 'normal',
         icon: '/g6-icons/server-warning.svg',
         showIcon: true,
+        disabled_collapse: true, // 隐藏展开下一层按钮
         data: { status: 'normal' }
       },
       { 
@@ -437,6 +448,7 @@ function loadSampleData() {
         statusType: 'normal',
         icon: '/g6-icons/server-abnormal.svg',
         showIcon: true,
+        disabled_collapse: true, // 隐藏展开下一层按钮
         data: { status: 'normal' }
       },
       
@@ -452,6 +464,7 @@ function loadSampleData() {
         comboId: 'combo-group-1',
         showIcon: true,
         icon: '/g6-icons/server-normal.svg',
+        disabled_collapse: true, // 隐藏展开下一层按钮
         data: { status: 'normal' }
       },
       { 
@@ -465,51 +478,82 @@ function loadSampleData() {
         comboId: 'combo-group-1',
         showIcon: true,
         icon: '/g6-icons/server2-normal.svg',
+        disabled_collapse: true, // 隐藏展开下一层按钮
         data: { status: 'normal' }
       }
     ]
     
-    // Combo 配置（节点组）
+    // Combo 配置（节点组）- 默认展开状态
     const combos = [
       { 
         id: 'group-basic', 
         title: '基础节点',
         type: 'custom-combo',
         statusType: 'normal',
-        collapsed: false,
-        padding: [60, 60, 60, 60]
+        collapsed: false, // 默认展开
+        show_collapsed: true, // 显示展开/收起按钮
+        padding: [60, 60, 60, 60],
+        style: {
+          fill: '#0099ff07',
+          stroke: '#09F',
+          lineWidth: 2
+        }
       },
       { 
         id: 'group-status', 
         title: '状态类型',
         type: 'custom-combo',
         statusType: 'normal',
-        collapsed: false,
-        padding: [60, 60, 60, 60]
+        collapsed: false, // 默认展开
+        show_collapsed: true, // 显示展开/收起按钮
+        padding: [60, 60, 60, 60],
+        style: {
+          fill: '#0099ff07',
+          stroke: '#09F',
+          lineWidth: 2
+        }
       },
       { 
         id: 'group-icons', 
         title: '图标类型',
         type: 'custom-combo',
         statusType: 'normal',
-        collapsed: false,
-        padding: [60, 60, 60, 60]
+        collapsed: false, // 默认展开
+        show_collapsed: true, // 显示展开/收起按钮
+        padding: [60, 60, 60, 60],
+        style: {
+          fill: '#0099ff07',
+          stroke: '#09F',
+          lineWidth: 2
+        }
       },
       { 
         id: 'combo-group-1', 
         title: 'Combo组',
         type: 'custom-combo',
         statusType: 'normal',
-        collapsed: false,
-        padding: [80, 80, 80, 80]
+        collapsed: false, // 默认展开
+        show_collapsed: true, // 显示展开/收起按钮
+        padding: [80, 80, 80, 80],
+        style: {
+          fill: '#0099ff07',
+          stroke: '#09F',
+          lineWidth: 2
+        }
       },
       { 
         id: 'group-empty', 
         title: '空组',
         type: 'custom-combo',
         statusType: 'normal',
-        collapsed: false,
-        padding: [60, 60, 60, 60]
+        collapsed: false, // 默认展开
+        show_collapsed: true, // 显示展开/收起按钮
+        padding: [60, 60, 60, 60],
+        style: {
+          fill: '#0099ff07',
+          stroke: '#09F',
+          lineWidth: 2
+        }
       }
     ]
 
@@ -650,32 +694,6 @@ function loadSampleData() {
   show.value = true
 }
 
-function toggleAnimate() {
-  animate.value = !animate.value
-  // In a real scenario, we would trigger a global config change or re-render
-  // For this demo, we might just toggle a class or state if supported
-  console.log('Animation toggled:', animate.value)
-}
-
-function toggleStatus() {
-   graphData.nodes.forEach(node => {
-       if (node.id === 'status-halo') {
-           node.statusType = node.statusType === 'abnormal' ? 'normal' : 'abnormal';
-           // Refresh graph item state if possible, or just let reactivity handle re-render if key changes
-           // G6 often requires explicit updateItem or refresh
-           if (lcG6.value) {
-               const graph = lcG6.value.getGraph();
-               const item = graph.findById('status-halo');
-               if (item) {
-                   graph.updateItem(item, { statusType: node.statusType });
-                   // Trigger state change logic
-                   graph.setItemState(item, 'statusType', node.statusType); 
-               }
-           }
-       }
-   })
-}
-
 function changeLayout() {
   // 切换布局后重新渲染 G6 组件
   if (lcG6.value && show.value) {
@@ -707,7 +725,25 @@ function changeLayout() {
 }
 
 function onEvent(type, e) {
-  if (type === 'node:click') console.log('Feature Node Clicked:', e.item.getModel())
+  if (type === 'node:click') {
+    console.log('Feature Node Clicked:', e.item.getModel())
+  } else if (type === 'combo:click') {
+    // 处理 combo 点击事件，确保收起/展开功能正常工作
+    const eventName = e.target?.get('event-name')
+    
+    if (eventName === 'combo-collapsed') {
+      // 通过 onG6Event 触发 combo-collapsed 事件，让系统自动处理收起/展开
+      const g6 = lcG6.value
+      if (g6) {
+        const g6_example = g6.getExample()
+        const g6_graph = g6.getGraph()
+        
+        g6.onG6Event(["combo-collapsed"], "click", e, g6_graph, {
+          g6_example: g6_example,
+        })
+      }
+    }
+  }
 }
 
 function onZoom(zoom) {
