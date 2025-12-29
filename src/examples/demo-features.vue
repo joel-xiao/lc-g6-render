@@ -323,6 +323,81 @@ function loadSampleData() {
         statusType: 'normal',
         showIcon: false,
         data: { status: 'normal' }
+      },
+      
+      // 第七组：不同图标类型展示
+      { 
+        id: 'icon-service-web', 
+        title: 'Web图标', 
+        desc: 'service_type: 10 (web图标)',
+        type: 'node-icon',
+        node_type: 'app',
+        statusType: 'normal',
+        service_type: 10,
+        showIcon: true,
+        data: { status: 'normal' }
+      },
+      { 
+        id: 'icon-service-phone', 
+        title: 'Phone图标', 
+        desc: 'service_type: 20/30 (phone图标)',
+        type: 'node-icon',
+        node_type: 'app',
+        statusType: 'normal',
+        service_type: 20,
+        showIcon: true,
+        data: { status: 'normal' }
+      },
+      { 
+        id: 'icon-user', 
+        title: '用户图标', 
+        desc: 'statusType: normal, user图标',
+        type: 'node-icon',
+        node_type: 'app',
+        statusType: 'normal',
+        is_user: true,
+        showIcon: true,
+        data: { status: 'normal' }
+      },
+      { 
+        id: 'icon-external', 
+        title: '外部图标', 
+        desc: 'statusType: external',
+        type: 'node-icon',
+        node_type: 'app',
+        statusType: 'external',
+        showIcon: true,
+        data: { status: 'normal' }
+      },
+      { 
+        id: 'icon-disabled', 
+        title: '禁用图标', 
+        desc: 'statusType: disabled (deleted图标)',
+        type: 'node-icon',
+        node_type: 'app',
+        statusType: 'disabled',
+        showIcon: true,
+        data: { status: 'normal' }
+      },
+      { 
+        id: 'icon-default-warning', 
+        title: '警告图标', 
+        desc: 'statusType: warning, default图标',
+        type: 'node-icon',
+        node_type: 'server',
+        statusType: 'warning',
+        showIcon: true,
+        data: { status: 'warning' }
+      },
+      { 
+        id: 'icon-default-abnormal', 
+        title: '异常图标', 
+        desc: 'statusType: abnormal, default图标',
+        type: 'node-icon',
+        node_type: 'server',
+        statusType: 'abnormal',
+        showIcon: true,
+        data: { status: 'error' }
       }
     ]
 
