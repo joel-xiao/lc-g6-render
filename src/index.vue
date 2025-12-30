@@ -80,6 +80,7 @@ function getOptions() {
 }
 let g6_graph = new G6Graph(getOptions());
 
+watch(() => props.options, () => {
   g6_graph.updateOptions(getOptions());
   g6_graph.render();
 })
