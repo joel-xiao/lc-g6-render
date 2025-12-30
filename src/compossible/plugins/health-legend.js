@@ -36,11 +36,20 @@ function getDefaultHealthSettings(icons) {
     };
 }
 
-// 默认 tooltip 状态
+// 默认 tooltip 状态 - 统一使用 statusType 作为 key
 const DEFAULT_TOOLTIP_STATUS = {
-    'deleted': { color: '#fff', bg: '#F53F3F', label: '已删除' },
-    'no_permission': { color: '#fff', bg: '#F53F3F', label: '暂无权限' },
+    'disabled': { color: '#fff', bg: '#F53F3F', label: '已删除' },
+    'no-permission': { color: '#fff', bg: '#F53F3F', label: '暂无权限' },
     'moved': { color: '#fff', bg: '#F53F3F', label: '已移动', desc: '该应用已配置至其他应用系统' }
+};
+
+// statusType 与布尔字段的映射关系
+const STATUS_TYPE_FLAGS = {
+    'disabled': 'is_deleted',
+    'moved': 'is_been_moved_to_other',
+    'external': 'is_external',
+    'user': 'is_user',
+    'no-permission': 'is_permission'
 };
 
 const DEFAULT_NO_LOGIC_TYPES = ['disabled', 'moved', 'external', 'user'];
@@ -85,14 +94,20 @@ export function getHealthSetting(nodeType) {
 }
 
 /**
- * 获取 tooltip 状态
+ * 获取 tooltip 状态 - 统一使用 statusType
  */
 export function getTooltipStatus(itemModel) {
     const p = _plugin || initHealthPlugin();
-    let type = itemModel.statusType;
-    if (itemModel.is_deleted) type = 'deleted';
-    if (itemModel.is_permission === false) type = 'no_permission';
-    return p.tooltip[type];
+    return p.tooltip[itemModel.statusType];
+}
+
+/**
+ * 根据 statusType 获取对应的布尔标记（兼容旧逻辑）
+ */
+export function getStatusFlags(statusType) {
+    const flag = STATUS_TYPE_FLAGS[statusType];
+    if (!flag) return {};
+    return { [flag]: statusType === 'no-permission' ? false : true };
 }
 
 /**

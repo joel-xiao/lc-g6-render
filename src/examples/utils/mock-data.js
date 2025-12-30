@@ -3,12 +3,13 @@
  * 用于演示拓扑图的各种节点状态和交互功能
  */
 
+// 禁用展开收起的 statusType 列表
+const DISABLED_COLLAPSE_STATUS_TYPES = ['user', 'external', 'disabled'];
+
 // 判断节点是否禁用展开收起
 export function getNodeDisabledCollapse(node) {
   return (
-    node.is_user ||
-    node.is_external ||
-    node.is_deleted ||
+    DISABLED_COLLAPSE_STATUS_TYPES.includes(node.statusType) ||
     node.node_type === "app" ||
     !!node.comboId
   );
@@ -28,10 +29,10 @@ export function getMockSysTopoData(sysId) {
     // 各种状态节点
     { id: "sys-warning-", title: "警告系统", type: "node-icon", node_type: "sys", statusType: "warning", showIcon: true, data: {}, props: { appsysid: "sys-warning", appid: "" } },
     { id: "sys-abnormal-", title: "异常系统", type: "node-icon", node_type: "sys", statusType: "abnormal", showIcon: true, data: {}, props: { appsysid: "sys-abnormal", appid: "" } },
-    { id: "sys-deleted-", title: "已删除系统", type: "node-icon", node_type: "sys", statusType: "disabled", is_deleted: true, showIcon: true, data: {}, props: { appsysid: "sys-deleted", appid: "" } },
-    { id: "EXTERNAL_SERVICE-", title: "外部服务", type: "node-icon", node_type: "sys", statusType: "external", is_external: true, showIcon: true, data: {}, props: { appsysid: "EXTERNAL_SERVICE", appid: "" } },
-    { id: "sys-moved-", title: "已移动系统", type: "node-icon", node_type: "sys", statusType: "moved", is_been_moved_to_other: true, showIcon: true, data: {}, props: { appsysid: "sys-moved", appid: "" } },
-    { id: "sys-user-", title: "用户", type: "node-icon", node_type: "sys", statusType: "user", is_user: true, showIcon: true, data: {}, props: { appsysid: "sys-user", appid: "" } },
+    { id: "sys-deleted-", title: "已删除系统", type: "node-icon", node_type: "sys", statusType: "disabled", showIcon: true, data: {}, props: { appsysid: "sys-deleted", appid: "" } },
+    { id: "EXTERNAL_SERVICE-", title: "外部服务", type: "node-icon", node_type: "sys", statusType: "external", showIcon: true, data: {}, props: { appsysid: "EXTERNAL_SERVICE", appid: "" } },
+    { id: "sys-moved-", title: "已移动系统", type: "node-icon", node_type: "sys", statusType: "moved", showIcon: true, data: {}, props: { appsysid: "sys-moved", appid: "" } },
+    { id: "sys-user-", title: "用户", type: "node-icon", node_type: "sys", statusType: "user", showIcon: true, data: {}, props: { appsysid: "sys-user", appid: "" } },
   ];
 
   const edges = [
@@ -219,7 +220,6 @@ export function getMockInsertEdges(model, sysId, appId) {
         data: {},
         source_props: model.props || {},
         target_props: { appsysid: "EXTERNAL_SERVICE", appid: "" },
-        is_external: true,
       }
     );
   } else if (model.node_type === 'sys') {
@@ -258,7 +258,6 @@ export function getMockInsertEdges(model, sysId, appId) {
         data: {},
         source_props: model.props || {},
         target_props: { appsysid: "EXTERNAL_SERVICE", appid: "" },
-        is_external: true,
       }
     );
   }

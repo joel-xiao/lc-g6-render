@@ -1,10 +1,11 @@
+// 禁用展开收起的 statusType 列表
+const DISABLED_COLLAPSE_STATUS_TYPES = ['user', 'external', 'disabled'];
+
 function getNodeDisabledCollapse(node) {
     // 组内的节点（应用节点）不应该有展开收起按钮
     // 只有系统节点（不在组内的）才可能有展开收起按钮
     return (
-        node.is_user ||
-        node.is_external ||
-        node.is_deleted ||
+        DISABLED_COLLAPSE_STATUS_TYPES.includes(node.statusType) ||
         !!node.comboId // 在组内的节点都禁用展开收起
     );
 }
@@ -33,7 +34,7 @@ const ExpandLinkEvent = {
         const model = evt.item.getModel();
 
         if (combo?.collapsed) {
-            if (model.is_deleted) return;
+            if (model.statusType === 'disabled') return;
 
             onEvent(
                 ["edge-running", "disabled", "node-collapsed"],
@@ -45,7 +46,7 @@ const ExpandLinkEvent = {
                 },
             );
         } else {
-            if (model.is_external || model.is_deleted) return;
+            if (model.statusType === 'external' || model.statusType === 'disabled') return;
 
             if (eventName === "node-collapsed") {
                 // 检查节点是否已展开（collapsed-name 为 true 表示已展开）

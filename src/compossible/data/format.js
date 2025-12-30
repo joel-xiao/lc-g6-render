@@ -188,21 +188,24 @@ export function toG6Data(data, option) {
     const topologyMap = new Map();
 
     data?.nodes?.forEach((node, idx) => {
+        // 根据布尔字段推导 statusType（兼容旧数据格式）
+        let statusType = node.statusType;
+        if (node.is_user) statusType = "user";
+        if (node.is_deleted) statusType = "disabled";
+        if (node.is_been_moved_to_other) statusType = "moved";
+        if (node.is_external) statusType = "external";
+        if (node.is_permission === false) statusType = "no-permission";
+
         const item = {
             shape: node.shape,
             showIcon: node.showIcon,
             title: node.title || node.app_name,
             id: getJoinId(data, node),
             props: getNodeProps(data, node),
-            statusType: node.statusType,
+            statusType: statusType,
             data: node.data,
             edges_number: node.edges_number,
             is_terminal: node.is_terminal,
-            is_external: node.is_external,
-            is_user: node.is_user,
-            is_deleted: node.is_deleted,
-            is_been_moved_to_other: node.is_been_moved_to_other,
-            is_permission: node.is_permission,
             node_type: node.node_type,
             icon: node.icon,
             service_type: node.service_type,
@@ -222,9 +225,6 @@ export function toG6Data(data, option) {
         if (node.center) item.center = node.center;
         if (node.comboId) item.comboId = node.comboId;
         if (node.service_type) item.service_type = node.service_type;
-        if (node.is_user) item.statusType = "user";
-        if (node.is_deleted) item.statusType = "disabled";
-        if (node.is_been_moved_to_other) item.statusType = "moved";
 
         // 是否为客户端
         const service_types = [10, 20, 30];
@@ -234,6 +234,14 @@ export function toG6Data(data, option) {
     });
 
     data?.links?.forEach((link, idx) => {
+        // 根据布尔字段推导 statusType（兼容旧数据格式）
+        let statusType = link.statusType;
+        if (link.is_user) statusType = "user";
+        if (link.is_deleted) statusType = "disabled";
+        if (link.is_been_moved_to_other) statusType = "moved";
+        if (link.is_external) statusType = "external";
+        if (link.is_permission === false) statusType = "no-permission";
+
         const item = {
             target: getJoinId(data, link.to),
             source: getJoinId(data, link.from),
@@ -243,11 +251,7 @@ export function toG6Data(data, option) {
             data: link.data,
             edge_depth: link.depth,
             is_not_link: link.is_not_link,
-            is_external: link.is_external,
-            is_user: link.is_user,
-            is_deleted: link.is_deleted,
-            is_been_moved_to_other: link.is_been_moved_to_other,
-            is_permission: link.is_permission,
+            statusType: statusType,
             type: link.type,
             comboId: link.comboId,
         };
@@ -270,23 +274,25 @@ export function toG6Data(data, option) {
     });
 
     data?.combos?.forEach((node, idx) => {
+        // 根据布尔字段推导 statusType（兼容旧数据格式）
+        let statusType = node.statusType;
+        if (node.is_user) statusType = "user";
+        if (node.is_deleted) statusType = "disabled";
+        if (node.is_been_moved_to_other) statusType = "moved";
+        if (node.is_external) statusType = "external";
+        if (node.is_permission === false) statusType = "no-permission";
+
         const item = {
             shape: node.shape,
             showIcon: node.showIcon,
             title: node.label || node.app_name || "--",
             id: getJoinId(data, node),
             props: getNodeProps(data, node),
-            statusType: node.statusType,
+            statusType: statusType,
             data: node.data,
             show_collapsed: node.show_collapsed,
             collapsed: node.collapsed,
-            statusType: node.statusType,
             is_terminal: node.is_terminal,
-            is_external: node.is_external,
-            is_user: node.is_user,
-            is_deleted: node.is_deleted,
-            is_been_moved_to_other: node.is_been_moved_to_other,
-            is_permission: node.is_permission,
             node_type: node.node_type,
             icon: node.icon,
             service_type: node.service_type,
@@ -304,9 +310,6 @@ export function toG6Data(data, option) {
         if (node.fill) item.fill = node.fill;
         if (node.stroke) item.stroke = node.stroke;
         if (node.header) item.header = node.header;
-        if (node.is_user) item.statusType = "user";
-        if (node.is_deleted) item.statusType = "disabled";
-        if (node.is_been_moved_to_other) item.statusType = "moved";
 
         result.combos.push(item);
     });
@@ -332,8 +335,8 @@ export function calcExternalNodes(data, option) {
     let node_idx = 0;
     while (node_idx < data.nodes.length) {
         const node = data.nodes[node_idx];
-        if (node.is_external) {
-            // is_external
+        if (node.statusType === 'external') {
+            // 外部服务节点
             const filter_edges = data.edges.filter((edge) => edge.target.startsWith(nodeId));
             edges.push(...filter_edges);
             data.edges = data.edges.filter(
