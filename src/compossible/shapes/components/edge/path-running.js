@@ -3,53 +3,53 @@ import { getAnimation, isNotAnimate, isAnimate } from '../../animations/index';
 const PathRunning = {
     name: 'path-running',
     add(type, { group, cfg, style }) {
-        add(type, { group, cfg, style }) {
 
-            const shape = group.get('children')[0];
-            const shape_startPoint = shape.getPoint(0);
 
-            group.addShape(type, {
-                attrs: {
-                    x: shape_startPoint?.x || 0,
-                    y: shape_startPoint?.y || 0,
-                    opacity: 0,
-                    stroke: style.stroke,
-                    fill: '#fff',
-                    shadowColor: style.stroke,
-                    shadowBlur: 10,
-                    r: 2,
-                },
-                name: this.name + type,
-            });
-        },
+        const shape = group.get('children')[0];
+        const shape_startPoint = shape.getPoint(0);
 
-        setState(item, { name, style, value }) {
-            if (name !== 'running') return;
+        group.addShape(type, {
+            attrs: {
+                x: shape_startPoint?.x || 0,
+                y: shape_startPoint?.y || 0,
+                opacity: 0,
+                stroke: style.stroke,
+                fill: '#fff',
+                shadowColor: style.stroke,
+                shadowBlur: 10,
+                r: 2,
+            },
+            name: this.name + type,
+        });
+    },
 
-            const model = item.getModel();
-            const keyShape = item.get('keyShape');
-            const endArrowShape = keyShape.cfg.endArrowShape;
-            const runShape = item.get('group').find(ele => ele.get('name').startsWith(this.name));
-            const graph = item.get('graph');
-            if (value) {
-                if (isAnimate(graph)) {
-                    getAnimation('from-to').start(runShape, { keyShape, graph });
-                    runShape.attr('opacity', 1);
-                }
+    setState(item, { name, style, value }) {
+        if (name !== 'running') return;
 
-                keyShape.attr('stroke', style.stroke);
-                endArrowShape?.attr('fill', style.endArrow.fill);
-
-            } else {
-                if (isAnimate(graph)) {
-                    getAnimation('from-to').stop(runShape);
-                    runShape.attr('opacity', 0);
-                }
-
-                keyShape.attr('stroke', model.style.stroke);
-                endArrowShape?.attr('fill', model.style.endArrow.fill);
+        const model = item.getModel();
+        const keyShape = item.get('keyShape');
+        const endArrowShape = keyShape.cfg.endArrowShape;
+        const runShape = item.get('group').find(ele => ele.get('name').startsWith(this.name));
+        const graph = item.get('graph');
+        if (value) {
+            if (isAnimate(graph)) {
+                getAnimation('from-to').start(runShape, { keyShape, graph });
+                runShape.attr('opacity', 1);
             }
-        }
-    };
 
-    export default PathRunning;
+            keyShape.attr('stroke', style.stroke);
+            endArrowShape?.attr('fill', style.endArrow.fill);
+
+        } else {
+            if (isAnimate(graph)) {
+                getAnimation('from-to').stop(runShape);
+                runShape.attr('opacity', 0);
+            }
+
+            keyShape.attr('stroke', model.style.stroke);
+            endArrowShape?.attr('fill', model.style.endArrow.fill);
+        }
+    }
+};
+
+export default PathRunning;
