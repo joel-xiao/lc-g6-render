@@ -3,7 +3,6 @@
  */
 import { getShape } from '../shapes/items/index';
 import { joinDataMapKey } from '../utils/common';
-import { calcNodeModelData } from '../data/format.js';
 
 /**
  * 基于中心节点计算 BFS 深度
@@ -128,7 +127,6 @@ export function addGraphData(graph, { e, node_edge_type, model }, data, cb) {
             cb?.('conflict-edge', existingItem, edge) || graph.mergeModel(existingItem, edge);
         } else {
             graph.addItem('edge', edge);
-            calcNodeModelData(edge, g6, graph.vmOption.utils, graph);
             setTimeout(() => {
                 const edgeItem = g6.findById(edge.id);
                 if (edgeItem) graph.updateItem(edgeItem, edge);

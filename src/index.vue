@@ -42,7 +42,7 @@ import {
   noLogicStatusType, 
   getHealthSetting,
 } from './compossible/plugins/health-legend.js'
-import { toG6Data } from './compossible/data/format.js'
+import { APMtoG6Data } from './compossible/data/lc-apm-to-g6.js'
 import { onEvent as onG6Event, isEvent as isG6Event } from './compossible/behaviors/events/index.js'
 import { onComponentEvent } from './compossible/behaviors/components/index.js'
 
@@ -178,7 +178,7 @@ defineExpose({
   removeItem: g6_graph.removeItem,
   updateItem: g6_graph.updateItem,
   changeData: g6_graph.updateItem,
-  toG6Data,
+  APMtoG6Data,
   refresh,
   onG6Event,
   onG6ComponentEvent,

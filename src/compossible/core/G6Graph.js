@@ -4,7 +4,7 @@ import { registry } from './registry';
 import { getLayout } from '../layouts/options';
 import { layoutEdges, layoutQuadraticEdges } from '../layouts/depth-vertical/algorithm';
 import { onEvent } from '../behaviors/events/index';
-import { mergeModel, calcNodeModelData } from '../data/format.js';
+import { mergeModel } from '../data/format.js';
 import { Caching } from '../utils/caching.js';
 
 // 拆分的模块
@@ -122,27 +122,14 @@ export class G6Graph {
         combo.addChild(item);
     }
 
-    mergeModel(item, model, change = 'addition') {
+    mergeModel(item, model) {
         let itemModel = item.getModel();
-        itemModel = mergeModel(
-            itemModel, model, change,
-            itemModel.mergeModel || this.vmOption.defaultMergeNode,
-            this.vmOption.utils, this
-        );
-        this.calcNodeModelData(item);
+        itemModel = mergeModel(itemModel, model);
         return itemModel;
     }
 
     updateItemState(item) {
         item.setState('statusType', Math.random());
-    }
-
-    calcNodeModelData(item) {
-        calcNodeModelData(item.getModel(), this.g6_graph, this.vmOption.utils, this);
-    }
-
-    calcTopologyData() {
-        this.g6_graph.getNodes().forEach(node => this.calcNodeModelData(node));
     }
 
     toFrontNodes() {
