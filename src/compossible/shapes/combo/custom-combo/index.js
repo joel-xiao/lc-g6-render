@@ -153,4 +153,17 @@ const CustomCombo = {
     }
 };
 
+export function getRegister(g6_example) {
+    const comboDef = { ...CustomCombo.combo };
+    comboDef.g6_example = g6_example;
+
+    return {
+        'custom-combo': {
+            register: CustomCombo.register,
+            combo: comboDef,
+            options: defaults
+        }
+    };
+}
+
 export default CustomCombo;
