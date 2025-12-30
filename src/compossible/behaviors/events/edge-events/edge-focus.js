@@ -20,6 +20,26 @@ export default {
         const selected = type === 'enter';
         const { item } = e;
         const model = item.getModel();
+
+        // Handle Node Event
+        if (item.getType() === 'node') {
+            const edges = item.getEdges();
+            edges.forEach(edge => {
+                const edgeModel = edge.getModel();
+                edgeModel.selected = selected;
+                g6_graph.setItemState(edge, 'selected', selected);
+                edge.toFront();
+
+                // Highlight neighbor nodes
+                const sourceNode = edge.getSource();
+                const targetNode = edge.getTarget();
+                if (sourceNode !== item) g6_graph.setItemState(sourceNode, 'selected', selected);
+                if (targetNode !== item) g6_graph.setItemState(targetNode, 'selected', selected);
+            });
+            return;
+        }
+
+        // Handle Edge Event
         const sourceItem = item.getSource();
         const source_in_edges = sourceItem.getInEdges();
         model.selected = selected;

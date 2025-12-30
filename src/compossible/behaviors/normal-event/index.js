@@ -26,13 +26,13 @@ const NormalEvent = {
     },
 
     onNodeEnter(evt, that) {
-        onEvent(['edge-running', 'node-collapsed', 'disabled'], 'enter', evt, that.g6_graph, {
+        onEvent(['edge-running', 'node-collapsed', 'disabled', 'edge-focus'], 'enter', evt, that.g6_graph, {
             g6_example: that,
         });
     },
 
     onNodeLeave(evt, that) {
-        onEvent(['edge-running', 'node-collapsed', 'disabled'], 'leave', evt, that.g6_graph, {
+        onEvent(['edge-running', 'node-collapsed', 'disabled', 'edge-focus'], 'leave', evt, that.g6_graph, {
             g6_example: that,
         });
     },
