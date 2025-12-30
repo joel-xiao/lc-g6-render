@@ -1,17 +1,19 @@
-stroke: '#09F',
+export default {
+    type: "custom-combo",
+    title: '--',
+    size: 70,
+    padding: [120, 120, 120, 120],
+    fill: '#0099ff07',
+    stroke: '#09F',
     center: {
-    show: true,
+        show: true,
         text: undefined
-},
-header: {
-    show: true,
-
+    },
+    header: {
+        show: true,
         style: {
-        fill: '#0099ff20',
+            fill: '#0099ff20',
             stroke: '#09F',
-                }
-}
-        },
+        }
     }
-return defaultData[type || 'custom-combo'];
-}
+};
