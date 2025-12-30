@@ -15,7 +15,7 @@ const PathRunning = {
                 opacity: 0,
                 stroke: style?.stroke,
                 fill: '#fff',
-                shadowColor: style.stroke,
+                shadowColor: style?.stroke,
                 shadowBlur: 10,
                 r: 2,
             },
@@ -37,8 +37,8 @@ const PathRunning = {
                 runShape.attr('opacity', 1);
             }
 
-            keyShape.attr('stroke', style.stroke);
-            endArrowShape?.attr('fill', style.endArrow.fill);
+            keyShape.attr('stroke', style?.stroke);
+            endArrowShape?.attr('fill', style?.endArrow?.fill);
 
         } else {
             if (isAnimate(graph)) {
@@ -46,8 +46,8 @@ const PathRunning = {
                 runShape.attr('opacity', 0);
             }
 
-            keyShape.attr('stroke', model.style.stroke);
-            endArrowShape?.attr('fill', model.style.endArrow.fill);
+            keyShape.attr('stroke', model?.style?.stroke);
+            endArrowShape?.attr('fill', model?.style?.endArrow?.fill);
         }
     }
 };

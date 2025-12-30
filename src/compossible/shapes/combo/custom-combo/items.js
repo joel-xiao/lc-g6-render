@@ -10,8 +10,8 @@ export function getComboShape(name) {
             name: 'combo-keyShape',
             getCfg(cfg, style, change_type) {
                 const data = {
-                    width: style.width,
-                    height: style.height,
+                    width: style?.width,
+                    height: style?.height,
                     style: {
                         fill: cfg.fill,
                         stroke: cfg.stroke,
