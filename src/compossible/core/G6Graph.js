@@ -11,6 +11,17 @@ import { joinDataMapKey } from '../utils/common';
 import { mergeModel, calcNodeModelData } from '../data/format.js';
 import { Caching } from '../utils/caching.js';
 
+function getCustomBehavior(type, event_type) {
+    const behaviors = {
+        'normal-event': NormalEvent,
+    };
+    const behavior = behaviors[type];
+    if (!behavior) return;
+
+    const fn_name = behavior.getEvent(event_type);
+    return behavior[fn_name];
+}
+
 export class G6Graph {
     data = { nodes: [], edges: [] };
     mapData = new Map();

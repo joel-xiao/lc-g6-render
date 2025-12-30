@@ -13,7 +13,7 @@ const PathRunning = {
                 x: shape_startPoint?.x || 0,
                 y: shape_startPoint?.y || 0,
                 opacity: 0,
-                stroke: style.stroke,
+                stroke: style?.stroke,
                 fill: '#fff',
                 shadowColor: style.stroke,
                 shadowBlur: 10,

@@ -113,7 +113,7 @@ export function getComboShape(name) {
                         y: cfg.y,
                         width: cfg.style.width,
                         height: 28,
-                        fill: header?.style.fill,
+                        fill: header?.style?.fill,
                     },
                     draggable: true,
                     name: header_name + '-rect',
@@ -128,7 +128,7 @@ export function getComboShape(name) {
                         textAlign: 'left',
                         height: 28,
                         width: 0,
-                        fill: header?.style.stroke
+                        fill: header?.style?.stroke
 
                     },
                     'text-tooltip': true,

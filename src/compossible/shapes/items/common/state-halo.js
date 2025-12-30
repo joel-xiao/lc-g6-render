@@ -24,6 +24,11 @@ export default {
             opacity: 0,
         };
 
+        if (graph_shape.type === 'path' && !attrs.path) {
+            console.warn('state-halo: path attribute missing for path shape', { cfg, style });
+            return;
+        }
+
         for (let i = 0; i < 3; i++) {
             group.addShape(graph_shape.type, {
                 attrs: {
