@@ -1,4 +1,4 @@
-import { layoutEdges, layoutCombo, layoutNodes, layoutNodesOffset } from './methods';
+import { layoutEdges, layoutCombo, layoutNodes, layoutNodesOffset } from './algorithm';
 
 export const registerLayout = {
     'dagre-tbt': {

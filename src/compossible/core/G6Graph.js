@@ -4,7 +4,7 @@ import { assignOptions } from './option-merger';
 import { registry } from './registry';
 import { getLayout } from '../layouts/options';
 import { getShape } from '../shapes/components/index';
-import { layoutEdges, layoutQuadraticEdges } from '../layouts/dagre-tbt/methods';
+import { layoutEdges, layoutQuadraticEdges } from '../layouts/dagre-tbt/algorithm';
 import { getCustomBehavior } from '../behaviors/scenarios';
 import { onEvent, getEvent } from '../behaviors/events/index';
 import { joinDataMapKey } from '../utils/common';
