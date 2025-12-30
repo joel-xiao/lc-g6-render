@@ -1,4 +1,4 @@
-import { getShapeAnimate } from '../../animations/shape-animate'; // Assuming this needs to be imported, although original didn't import it here but used it in methods.
+import { getAnimation as getShapeAnimate } from '../../shapes/animations/index'; // Aliasing for compatibility if used, though it seems unused in visible code. Checking file content again showed no usage, but safer to keep reference valid logic-wise or remove if unused. User prompt error confirmed it exists.
 
 export default {
     // 边动画

@@ -1,5 +1,5 @@
 import { getGraphShape } from '../utils';
-import { getShapeAnimate, isNotAnimate } from '../../animations/shape-animate';
+import { getAnimation, isNotAnimate } from '../../animations/index';
 
 export default {
     name: 'state-halo',
@@ -66,9 +66,9 @@ export default {
                     shape.attr('opacity', value ? 1 : 0);
 
                     if (value) {
-                        getShapeAnimate('ripple').start(shape, item);
+                        getAnimation('ripple').start(shape, item);
                     } else {
-                        getShapeAnimate('ripple').stop(shape, item);
+                        getAnimation('ripple').stop(shape, item);
                     }
                 }
 
@@ -85,7 +85,7 @@ export default {
 
         group_children.forEach(shape => {
             if (shape.get('name')?.includes(shape_name)) {
-                getShapeAnimate('ripple').stop(shape, item);
+                getAnimation('ripple').stop(shape, item);
                 shape.attr('opacity', 0);
                 shape.attr('show', false);
             }
@@ -101,7 +101,7 @@ export default {
             if (shape.get('name')?.includes(shape_name)) {
                 shape.attr('opacity', 1);
                 shape.attr('show', true);
-                getShapeAnimate('ripple').start(shape, item);
+                getAnimation('ripple').start(shape, item);
             }
         });
     },

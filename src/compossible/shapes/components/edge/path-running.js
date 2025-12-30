@@ -1,4 +1,4 @@
-import { getShapeAnimate, isNotAnimate, isAnimate } from '../../../animations/shape-animate';
+import { getAnimation, isNotAnimate, isAnimate } from '../../animations/index';
 
 const PathRunning = {
     name: 'path-running',
@@ -32,7 +32,7 @@ const PathRunning = {
         const runShape = item.get('group').find(ele => ele.get('name').startsWith(this.name));
         if (value) {
             if (isAnimate()) {
-                getShapeAnimate('from-to').start(runShape, { keyShape });
+                getAnimation('from-to').start(runShape, { keyShape });
                 runShape.attr('opacity', 1);
             }
 
@@ -41,7 +41,7 @@ const PathRunning = {
 
         } else {
             if (isAnimate()) {
-                getShapeAnimate('from-to').stop(runShape);
+                getAnimation('from-to').stop(runShape);
                 runShape.attr('opacity', 0);
             }
 
