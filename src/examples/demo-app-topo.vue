@@ -55,7 +55,7 @@ import LcG6 from "../index.vue";
 import {
   getLayoutData,
   filterSelfNodeData,
-} from "../compossible/data-format-methods";
+} from "../compossible/data/format";
 import LcLoadingIcon from "../lc-loading-icon.vue";
 // import ApplicationTopologyView from "./application-topology-view.vue";
 // import ApplicationTooltip from "./application-tooltip.vue";

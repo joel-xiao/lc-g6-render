@@ -35,10 +35,12 @@ import LcLegend from './lc-g6-legend.vue'
 import LcG6Loading from './lc-g6-loading.vue'
 import LcZoom from "./lc-zoom.vue";
 import { onMounted, ref, reactive ,watch, onBeforeUnmount, nextTick  } from 'vue'
-import { G6Graph } from './compossible/g6.js'
-import { getUuid, noLogicStatusType } from './compossible/util.js'
-import { toG6Data } from './compossible/data-format-methods.js'
-import { onComponentEvent, onEvent as onG6Event, isEvent as isG6Event } from './compossible/event.js'
+import { G6Graph } from './compossible/g6'
+import { getUuid } from './compossible/utils/common.js'
+import { noLogicStatusType } from './compossible/utils/health.js'
+import { toG6Data } from './compossible/data/format.js'
+import { onEvent as onG6Event, isEvent as isG6Event } from './compossible/behaviors/events/index.js'
+import { onComponentEvent } from './compossible/behaviors/components/index.js'
 
 const emits = defineEmits(['event', 'zoom']);
 const props = defineProps({

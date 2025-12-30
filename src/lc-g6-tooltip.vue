@@ -14,7 +14,7 @@
 
 <script setup>
 import { ref, computed, nextTick, getCurrentInstance, onMounted, onBeforeUnmount } from 'vue';
-import { getContent } from './compossible/plugins-tooltip.js'
+import { getContent } from './compossible/plugins/tooltip.js'
 
 const { proxy } = getCurrentInstance();
 const emit = defineEmits(['enter', 'leave', 'hide']);

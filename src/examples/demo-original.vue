@@ -55,7 +55,7 @@
 import { ref, reactive, computed, onMounted, nextTick } from 'vue'
 import LcG6 from '../index.vue'
 import LcLoadingIcon from '../lc-loading-icon.vue'
-import { toG6Data, calcTopologyDepth } from '../compossible/data-format-methods.js'
+import { toG6Data, calcTopologyDepth } from '../compossible/data/format.js'
 
 const show = ref(false)
 const lcG6 = ref(null)
