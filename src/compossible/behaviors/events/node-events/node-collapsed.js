@@ -168,18 +168,28 @@ export default {
             const out_edges = e.item.getOutEdges();
             const shape_top_base_data = getShape('arrow').getCfg(model, 'top').base_data;
             const shape_bottom_base_data = getShape('arrow').getCfg(model, 'bottom').base_data;
+            const top_collapsed_name = shape_top_base_data['collapsed-name'];
+            const bottom_collapsed_name = shape_bottom_base_data['collapsed-name'];
+
             if (model.duplex_edge_one && model.duplex_edge_type === 'out-edges') {
-                g6_graph.setItemState(e.item, 'node-collapsed', { name: 'collapsed-name', 'node-edge-type': shape_top_base_data['node-edge-type'], value: model[shape_bottom_base_data['collapsed-name']] });
-                g6_graph.setItemState(e.item, 'node-collapsed', { name: 'collapsed-name', 'node-edge-type': shape_bottom_base_data['node-edge-type'], value: model[shape_bottom_base_data['collapsed-name']] });
+                g6_graph.setItemState(e.item, 'node-collapsed', { name: 'collapsed-name', 'node-edge-type': shape_top_base_data['node-edge-type'], value: model[bottom_collapsed_name] });
+                g6_graph.setItemState(e.item, 'node-collapsed', { name: 'collapsed-name', 'node-edge-type': shape_bottom_base_data['node-edge-type'], value: model[bottom_collapsed_name] });
                 return;
             } else if (model.duplex_edge_one && model.duplex_edge_type === 'in-edges') {
-                g6_graph.setItemState(e.item, 'node-collapsed', { name: 'collapsed-name', 'node-edge-type': shape_top_base_data['node-edge-type'], value: model[shape_top_base_data['collapsed-name']] });
-                g6_graph.setItemState(e.item, 'node-collapsed', { name: 'collapsed-name', 'node-edge-type': shape_bottom_base_data['node-edge-type'], value: model[shape_top_base_data['collapsed-name']] });
+                g6_graph.setItemState(e.item, 'node-collapsed', { name: 'collapsed-name', 'node-edge-type': shape_top_base_data['node-edge-type'], value: model[top_collapsed_name] });
+                g6_graph.setItemState(e.item, 'node-collapsed', { name: 'collapsed-name', 'node-edge-type': shape_bottom_base_data['node-edge-type'], value: model[top_collapsed_name] });
                 return;
             }
 
-            !!in_edges.length && g6_graph.setItemState(e.item, 'node-collapsed', { name: 'collapsed-name', 'node-edge-type': shape_top_base_data['node-edge-type'], value: true });
-            !!out_edges.length && g6_graph.setItemState(e.item, 'node-collapsed', { name: 'collapsed-name', 'node-edge-type': shape_bottom_base_data['node-edge-type'], value: true });
+            // 如果有边，设置 collapsed-name 为 true（表示已展开状态）
+            if (in_edges.length) {
+                model[top_collapsed_name] = true;
+                g6_graph.setItemState(e.item, 'node-collapsed', { name: 'collapsed-name', 'node-edge-type': shape_top_base_data['node-edge-type'], value: true });
+            }
+            if (out_edges.length) {
+                model[bottom_collapsed_name] = true;
+                g6_graph.setItemState(e.item, 'node-collapsed', { name: 'collapsed-name', 'node-edge-type': shape_bottom_base_data['node-edge-type'], value: true });
+            }
         }
     },
 

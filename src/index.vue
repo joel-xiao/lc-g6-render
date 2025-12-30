@@ -75,6 +75,7 @@ function getOptions() {
       ...props.options,
       setZoom,
       onEvent,
+      onG6ComponentEvent,
     }
   };
 }
@@ -117,16 +118,7 @@ function getGraph() {
 }
 
 function addData(option, data, ...args) {
-  option = option || {};
-  if (option.e) {
-    onComponentEvent(['custom-loading'], 'hide', option.e, g6_graph.getGraph(), loadingRef.value, 
-    { text: !data?.nodes?.length ? '暂无数据': ''},
-    () => {
-      g6_graph.addData(option, data, ...args);
-    });
-  } else {
-      g6_graph.addData(option, data, ...args);
-  }
+  g6_graph.addData(option || {}, data, ...args);
 }
 
 function addItem(...args) {
