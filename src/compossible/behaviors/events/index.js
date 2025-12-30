@@ -1,10 +1,10 @@
-import NodeCollapsed from './node-collapsed';
-import NodeActive from './node-active';
-import EdgeRunning from './edge-running';
-import EdgeFocus from './edge-focus';
-import ComboCollapsed from './combo-collapsed';
-import LoopEdge from './loop-edge';
-import Disabled from './disabled';
+import NodeCollapsed from './node-events/node-collapsed';
+import NodeActive from './node-events/node-active';
+import EdgeRunning from './edge-events/edge-running';
+import EdgeFocus from './edge-events/edge-focus';
+import ComboCollapsed from './combo-events/combo-collapsed';
+import LoopEdge from './edge-events/loop-edge';
+import Disabled from './common-events/disabled';
 
 const events = {
     'node-collapsed': NodeCollapsed,
