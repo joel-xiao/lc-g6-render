@@ -1,7 +1,7 @@
 import G6 from "@antv/g6";
 // import { getAnchorPoints } from '../utils' // If needed
 
-export function getDefaultEdge(type) {
+export default function getDefaultEdge(type) {
     // const point = getAnchorPoints('center').getEdgeAnchorPoints({
     //   size: 70,
     //   lineWidth: 2,
