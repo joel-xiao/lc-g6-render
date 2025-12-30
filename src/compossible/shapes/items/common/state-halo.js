@@ -20,7 +20,7 @@ export default {
             ...graph_shape.attrs,
             x: 0,
             y: 0,
-            stroke: style.stroke + that_cfg.opacity,
+            stroke: (style && style.stroke ? style.stroke : '') + that_cfg.opacity,
             opacity: 0,
         };
 
@@ -67,7 +67,7 @@ export default {
                 } else {
                     shape.attr('opacity', value ? 1 : 0);
 
-                    if (value) {
+                    if (style && style.fill) {
                         getAnimation('ripple').start(shape, item);
                     } else {
                         getAnimation('ripple').stop(shape, item);
