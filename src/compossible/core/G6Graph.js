@@ -5,7 +5,7 @@ import { registry } from './registry';
 import { getLayout } from '../layouts/options';
 import { getShape } from '../shapes/components/index';
 import { layoutEdges, layoutQuadraticEdges } from '../layouts/dagre-tbt/algorithm';
-import { getCustomBehavior } from '../behaviors/scenarios';
+import NormalEvent from '../behaviors/normal-event/index';
 import { onEvent, getEvent } from '../behaviors/events/index';
 import { joinDataMapKey } from '../utils/common';
 import { mergeModel, calcNodeModelData } from '../data/format.js';

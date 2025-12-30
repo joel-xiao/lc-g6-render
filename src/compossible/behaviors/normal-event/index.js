@@ -1,6 +1,6 @@
-import { onEvent } from './events/index';
+import { onEvent } from '../events/index';
 
-export default {
+const NormalEvent = {
     getEvent(event_type) {
         const events = {
             'node:click': 'onNodeClick',
@@ -94,3 +94,5 @@ export default {
         onEvent(['edge-focus'], 'clear', evt, that.g6_graph);
     },
 };
+
+export default NormalEvent;

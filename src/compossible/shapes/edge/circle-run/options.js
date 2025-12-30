@@ -50,42 +50,8 @@ export function getDefaultEdge(type) {
         }
     };
 
-    const defaultData = {
-        'cubic-circle-run': {
-            type: 'cubic-circle-run',
-            style: {
-                ...baseStyle,
-            }
-        },
-
-        'cubic-v-circle-run': {
-            type: 'cubic-v-circle-run',
-            style: {
-                ...baseStyle,
-            }
-        },
-
-        'arc-circle-run': {
-            type: 'arc-circle-run',
-            style: {
-                ...baseStyle,
-            }
-        },
-
-        'line-circle-run': {
-            type: 'line-circle-run',
-            style: {
-                ...baseStyle,
-            }
-        },
-
-        'loop-circle-run': {
-            type: 'loop-circle-run',
-            style: {
-                ...baseStyle,
-            }
-        }
+    return {
+        type: type || 'cubic-v-circle-run',
+        style: baseStyle
     };
-
-    return defaultData[type] || defaultData['cubic-v-circle-run'];
 }
