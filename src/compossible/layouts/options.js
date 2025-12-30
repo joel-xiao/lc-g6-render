@@ -1,55 +1,20 @@
 import G6 from "@antv/g6";
+import { getDagreOptions } from './dagre/options';
+import { getDagreGridOptions } from './dagre-grid/options';
+import { getGridOptions } from './grid/options';
+import { getRandomOptions } from './random/options';
 import { getDagreTbtOptions } from './dagre-tbt/options';
 import { getDagreTgbOptions } from './dagre-tgb/options';
 
 export function getLayout(layout, options) {
     const data = {
-        'dagre': {
-            type: 'comboCombined',
-            outerLayout: new G6.Layout['dagre']({
-                rankdir: 'TB',
-                nodesep: 70,
-                ranksep: 80,
-                sortByCombo: true,
-                ...options?.outerLayout,
-            }),
+        'dagre': getDagreOptions(options),
 
-            innerLayout: new G6.Layout['dagre']({
-                rankdir: 'TB',
-                nodesep: 70,
-                ranksep: 50,
-                ...options?.innerLayout,
-            }),
-        },
+        'dagre-grid': getDagreGridOptions(options),
 
-        'dagre-grid': {
-            type: 'comboCombined',
-            begin: [0, 0],
-            outerLayout: new G6.Layout['dagre']({
-                rankdir: 'LR',
-                nodesep: 90,
-                ranksep: 90,
-                sortByCombo: true,
-                ...options?.outerLayout,
-            }),
+        'grid': getGridOptions(),
 
-            innerLayout: new G6.Layout['grid']({
-                preventOverlap: true,
-                condense: true,
-                nodeSize: 70 * 2.3,
-                sortBy: 'comboId',
-                // ...options?.innerLayout,
-            }),
-        },
-
-        'grid': {
-            type: 'grid',
-            // begin: [20, 20],
-        },
-
-        'random': {
-            type: 'random',
-        },
+        'random': getRandomOptions(),
 
         'dagre-tbt': getDagreTbtOptions(),
 
