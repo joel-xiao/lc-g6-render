@@ -9,7 +9,8 @@ export function getCommonEdge(edge_type, g6_example) {
         'circle-run': {
             afterDraw(cfg, group) {
                 const style = cfg.style?.running;
-                getEdgeShape('state-halo').add('path', { cfg, group, style });
+                const path = group.get('children')[0].attr('path');
+                getEdgeShape('state-halo').add('path', { cfg: { ...cfg, path }, group, style });
                 getEdgeShape('path-running').add('circle', { cfg, group, style });
             },
 

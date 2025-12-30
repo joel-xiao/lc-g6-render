@@ -26,6 +26,10 @@ export function getGraphShape(type, { cfg, style }) {
             rx: Array.isArray(cfg.size) ? cfg.size[0] / 2 : cfg.size / 2,
             ry: Array.isArray(cfg.size) ? cfg.size[1] / 2 : cfg.size / 2,
         };
+    } else if (type === 'path') {
+        attrs = {
+            path: cfg.path || style.path,
+        };
     } else {
         // Default fallback to circle attributes to prevent crash
         attrs = {
