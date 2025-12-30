@@ -65,8 +65,6 @@ const currentLayout = ref('dagre')
 // G6 支持的所有布局类型（移除不支持的布局）
 const layouts = [
   { label: 'Dagre (层次)', value: 'dagre' },
-  { label: 'Depth-Vertical (深度垂直)', value: 'depth-vertical' },
-  // { label: 'Depth-Grid (深度网格)', value: 'depth-grid' },
   { label: 'Force (力导向)', value: 'force' },
   { label: 'Circular (环形)', value: 'circular' },
   { label: 'Radial (辐射)', value: 'radial' },
@@ -82,9 +80,11 @@ const graphData = reactive({
 })
 
 const getLayoutConfig = (layoutType) => {
-  // 使用普通对象，避免响应式导致的循环引用问题
+  // 节点实际占用空间（包含光环、标题等装饰）
+  const nodeSize = 120
   const baseConfig = {
-    preventOverlap: true
+    preventOverlap: true,
+    nodeSize
   }
   
   switch (layoutType) {
@@ -93,68 +93,50 @@ const getLayoutConfig = (layoutType) => {
         ...baseConfig,
         type: 'dagre',
         rankdir: 'LR',
-        nodesep: 60,
-        ranksep: 100,
+        nodesep: 35,
+        ranksep: 35,
         sortByCombo: true
-      }
-    case 'depth-vertical':
-      return {
-        ...baseConfig,
-        type: 'depth-vertical',
-        nodesep: 70,
-        ranksep: 80
       }
     case 'depth-grid':
       return {
         ...baseConfig,
         type: 'depth-grid',
-        nodesep: 70,
-        ranksep: 80
+        nodesep: 100,
+        ranksep: 120
       }
     case 'force':
       return {
         ...baseConfig,
         type: 'force',
-        nodeSize: 100,
-        linkDistance: 150,
-        nodeStrength: -500,
-        edgeStrength: 0.2,
-        collideStrength: 1,
-        alpha: 0.5,
-        alphaDecay: 0.02,
-        tick: 100
+        linkDistance: 250,
+        nodeStrength: -1000,
+        edgeStrength: 0.1,
+        collideStrength: 1
       }
     case 'circular':
       return {
         ...baseConfig,
         type: 'circular',
-        radius: 200,
-        startRadius: 10,
-        endRadius: 300,
-        clockwise: true,
-        divisions: 5
+        radius: 400
       }
     case 'radial':
       return {
         ...baseConfig,
         type: 'radial',
-        unitRadius: 100,
-        preventOverlap: true
+        unitRadius: 200
       }
     case 'comboForce':
       return {
         ...baseConfig,
         type: 'comboForce',
-        nodeSpacing: 30,
-        comboSpacing: 50,
-        preventOverlap: true
+        nodeSpacing: 80,
+        comboSpacing: 100
       }
     case 'grid':
       return {
         ...baseConfig,
         type: 'grid',
-        nodeSize: 100,
-        preventOverlapPadding: 30
+        preventOverlapPadding: 80
       }
     case 'random':
       return {
@@ -166,8 +148,8 @@ const getLayoutConfig = (layoutType) => {
         ...baseConfig,
         type: 'dagre',
         rankdir: 'LR',
-        nodesep: 60,
-        ranksep: 100
+        nodesep: 100,
+        ranksep: 150
       }
   }
 }
@@ -483,15 +465,15 @@ function loadSampleData() {
       }
     ]
     
-    // Combo 配置（节点组）- 默认展开状态
+    // Combo 配置（节点组）- 仅用于分组展示，不支持展开收起
     const combos = [
       { 
         id: 'group-basic', 
         title: '基础节点',
         type: 'custom-combo',
         statusType: 'normal',
-        collapsed: false, // 默认展开
-        show_collapsed: true, // 显示展开/收起按钮
+        collapsed: false,
+        show_collapsed: false, // 不显示展开/收起按钮
         padding: [60, 60, 60, 60],
         style: {
           fill: '#0099ff07',
@@ -504,8 +486,8 @@ function loadSampleData() {
         title: '状态类型',
         type: 'custom-combo',
         statusType: 'normal',
-        collapsed: false, // 默认展开
-        show_collapsed: true, // 显示展开/收起按钮
+        collapsed: false,
+        show_collapsed: false,
         padding: [60, 60, 60, 60],
         style: {
           fill: '#0099ff07',
@@ -518,8 +500,8 @@ function loadSampleData() {
         title: '图标类型',
         type: 'custom-combo',
         statusType: 'normal',
-        collapsed: false, // 默认展开
-        show_collapsed: true, // 显示展开/收起按钮
+        collapsed: false,
+        show_collapsed: false,
         padding: [60, 60, 60, 60],
         style: {
           fill: '#0099ff07',
@@ -532,8 +514,8 @@ function loadSampleData() {
         title: 'Combo组',
         type: 'custom-combo',
         statusType: 'normal',
-        collapsed: false, // 默认展开
-        show_collapsed: true, // 显示展开/收起按钮
+        collapsed: false,
+        show_collapsed: false,
         padding: [80, 80, 80, 80],
         style: {
           fill: '#0099ff07',
@@ -546,8 +528,8 @@ function loadSampleData() {
         title: '空组',
         type: 'custom-combo',
         statusType: 'normal',
-        collapsed: false, // 默认展开
-        show_collapsed: true, // 显示展开/收起按钮
+        collapsed: false,
+        show_collapsed: false,
         padding: [60, 60, 60, 60],
         style: {
           fill: '#0099ff07',
@@ -695,32 +677,12 @@ function loadSampleData() {
 }
 
 function changeLayout() {
-  // 切换布局后重新渲染 G6 组件
+  // 切换布局 - 重新创建图实例
   if (lcG6.value && show.value) {
-    try {
-      // 先更新布局配置
-      const layoutConfig = toRaw(getLayoutConfig(currentLayout.value))
-      const graph = lcG6.value.getGraph()
-      
-      if (graph) {
-        // 更新布局
-        graph.updateLayout(layoutConfig)
-      }
-      
-      // 重新设置数据以触发重新渲染
-      setTimeout(() => {
-        if (lcG6.value && graphData.nodes.length > 0) {
-          // 使用 setData 重新渲染整个组件
-          lcG6.value.setData({
-            nodes: [...graphData.nodes],
-            edges: [...graphData.edges],
-            combos: [...graphData.combos]
-          })
-        }
-      }, 50)
-    } catch (error) {
-      console.error('Layout update error:', error)
-    }
+    show.value = false
+    setTimeout(() => {
+      show.value = true
+    }, 100)
   }
 }
 

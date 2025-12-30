@@ -315,7 +315,17 @@ const ExpandLinkEvent = {
         const model = evt.item.getModel();
         const eventName = evt.target?.get("event-name");
 
+        // 点击收起/展开按钮
         if (eventName === "combo-collapsed") {
+            onEvent(
+                ["combo-collapsed"],
+                "click",
+                evt,
+                that.g6_graph,
+                {
+                    g6_example: that,
+                },
+            );
             return;
         }
 

@@ -3,7 +3,9 @@ export default {
         if (e.target.get('event-name') === 'combo-collapsed') {
             g6_graph.collapseExpandCombo(e.item);
 
+            // combo 展开收起后需要重新布局
             g6_graph.layout();
+
             let timer, timer2;
             clearTimeout(timer);
             clearTimeout(timer2);
