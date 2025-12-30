@@ -1,6 +1,8 @@
 export default {
     click(g6_graph, e, that, option) {
-        if (e.target.get('event-name') !== 'node-main') return;
+        // 允许点击节点的任何部分触发光晕，除非明确禁用
+        if (e.target.get('disabled-active')) return;
+        
         const g6_example = option.g6_example;
         const caching = g6_example.caching;
         // if (caching.hasCaching('event.node-active.item')) return;

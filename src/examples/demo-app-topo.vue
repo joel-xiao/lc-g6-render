@@ -52,7 +52,6 @@
 <script>
 import { debounce } from "lodash";
 import LcG6 from "../index.vue";
-import ExpandLinkEvent from '../compossible/behaviors/expand-link-event/index.js';
 import {
   getLayoutData,
   filterSelfNodeData,
@@ -189,7 +188,7 @@ export default {
       return {
         legend: true,
         minimap: true,
-        customBehaviors: [ExpandLinkEvent, 'collapse-expand-combo', 'drag-combo'],
+        customBehaviors: ['expand-link-event'],
         tooltip: {
           show: true,
           width: "500px",
@@ -557,17 +556,20 @@ export default {
         activeNodes: [this.topologyOption.appsysid, this.app_center_id],
         centerNodes: [this.topologyOption.appsysid, this.app_center_id],
         defaultEdge: {
+          type: "cubic-v-circle-run",
           style: {
             cursor: "pointer",
           },
         },
         defaultNode: {
+          type: "node-icon",
           shape: "hexagonal-polygon",
           center: {
             text: "应用",
           },
         },
         defaultCombo: {
+          type: "custom-combo",
           center: {
             show: true,
             text: "应用",
@@ -976,20 +978,24 @@ export default {
         {
           id: "sys-level1-out-1-",
           title: "Level1 Out System 1",
+          type: "node-icon",
           node_type: "sys",
           is_permission: true,
           statusType: "normal",
-          showIcon: false,
+          showIcon: true,
+          icon: '/g6-icons/server-normal.svg',
           data: { pending: { layer: "sys" } },
           props: { appsysid: "sys-level1-out-1", appid: "" }
         },
         {
           id: "sys-level1-out-2-",
           title: "Level1 Out System 2",
+          type: "node-icon",
           node_type: "sys",
           is_permission: true,
           statusType: "normal",
-          showIcon: false,
+          showIcon: true,
+          icon: '/g6-icons/server-normal.svg',
           data: { pending: { layer: "sys" } },
           props: { appsysid: "sys-level1-out-2", appid: "" }
         },
@@ -997,20 +1003,24 @@ export default {
         {
           id: "sys-level1-in-1-",
           title: "Level1 In System 1",
+          type: "node-icon",
           node_type: "sys",
           is_permission: true,
           statusType: "normal",
-          showIcon: false,
+          showIcon: true,
+          icon: '/g6-icons/server-normal.svg',
           data: { pending: { layer: "sys" } },
           props: { appsysid: "sys-level1-in-1", appid: "" }
         },
         {
           id: "sys-level1-in-2-",
           title: "Level1 In System 2",
+          type: "node-icon",
           node_type: "sys",
           is_permission: true,
           statusType: "normal",
-          showIcon: false,
+          showIcon: true,
+          icon: '/g6-icons/server-normal.svg',
           data: { pending: { layer: "sys" } },
           props: { appsysid: "sys-level1-in-2", appid: "" }
         },
@@ -1018,10 +1028,12 @@ export default {
         {
           id: "sys-warning-",
           title: "Warning System",
+          type: "node-icon",
           node_type: "sys",
           is_permission: true,
           statusType: "warning",
-          showIcon: false,
+          showIcon: true,
+          icon: '/g6-icons/server-warning.svg',
           data: { pending: { layer: "sys" } },
           props: { appsysid: "sys-warning", appid: "" }
         },
@@ -1029,23 +1041,26 @@ export default {
         {
           id: "sys-abnormal-",
           title: "Abnormal System",
+          type: "node-icon",
           node_type: "sys",
           is_permission: true,
           statusType: "abnormal",
-          showIcon: false,
+          showIcon: true,
+          icon: '/g6-icons/server-abnormal.svg',
           data: { pending: { layer: "sys" } },
           props: { appsysid: "sys-abnormal", appid: "" }
         },
-        // 已删除状态节点（专门用于展示 disabled 状态，is_deleted 必须配合 deleted.svg 图标使用）
+        // 已删除状态节点（专门用于展示 disabled 状态）
         {
           id: "sys-deleted-",
           title: "Deleted System",
+          type: "node-icon",
           node_type: "sys",
           is_permission: true,
           statusType: "disabled",
-          is_deleted: true, // 只有使用 deleted.svg 图标的节点才设置 is_deleted
+          is_deleted: true,
           showIcon: true,
-          icon: '/g6-icons/deleted.svg', // is_deleted 必须与 deleted.svg 图标匹配
+          icon: '/g6-icons/deleted.svg',
           data: { pending: { layer: "sys" } },
           props: { appsysid: "sys-deleted", appid: "" }
         },
@@ -1053,11 +1068,13 @@ export default {
         {
           id: "EXTERNAL_SERVICE-",
           title: "External Service",
+          type: "node-icon",
           node_type: "sys",
           is_permission: true,
           statusType: "external",
           is_external: true,
-          showIcon: false,
+          showIcon: true,
+          icon: '/g6-icons/external.svg',
           data: { pending: { layer: "sys" } },
           props: { appsysid: "EXTERNAL_SERVICE", appid: "" }
         },
@@ -1065,6 +1082,7 @@ export default {
         {
           id: "sys-moved-",
           title: "Moved System",
+          type: "node-icon",
           node_type: "sys",
           is_permission: true,
           statusType: "moved",
@@ -1078,11 +1096,13 @@ export default {
         {
           id: "sys-user-",
           title: "User System",
+          type: "node-icon",
           node_type: "sys",
           is_permission: true,
           statusType: "user",
           is_user: true,
-          showIcon: false,
+          showIcon: true,
+          icon: '/g6-icons/user.svg',
           data: { pending: { layer: "sys" } },
           props: { appsysid: "sys-user", appid: "" }
         }
@@ -1253,13 +1273,13 @@ export default {
           id: centerAppId,
           title: "Demo App",
           node_type: "app",
-          service_type: 10,
           is_permission: true,
           statusType: "normal",
           showIcon: true,
+          icon: '/g6-icons/web-normal.svg',
           shape: "circle",
           comboId: comboId,
-          disabled_collapse: true, // 组内节点禁用展开收起按钮
+          disabled_collapse: true,
           data: { pending: { layer: "app" } },
           props: { appsysid: sysId, appid: appId },
           center: { text: "" },
@@ -1270,13 +1290,13 @@ export default {
           id: `${sysId}-app-level1-out-1`,
           title: "Level1 Out App 1",
           node_type: "app",
-          service_type: 20,
           is_permission: true,
           statusType: "normal",
           showIcon: true,
+          icon: '/g6-icons/phone-normal.svg',
           shape: "circle",
           comboId: comboId,
-          disabled_collapse: true, // 组内节点禁用展开收起按钮
+          disabled_collapse: true,
           data: { pending: { layer: "app" } },
           props: { appsysid: sysId, appid: "app-level1-out-1" },
           center: { text: "" },
@@ -1286,13 +1306,13 @@ export default {
           id: `${sysId}-app-level1-out-2`,
           title: "Level1 Out App 2",
           node_type: "app",
-          service_type: 10,
           is_permission: true,
           statusType: "normal",
           showIcon: true,
+          icon: '/g6-icons/web-normal.svg',
           shape: "circle",
           comboId: comboId,
-          disabled_collapse: true, // 组内节点禁用展开收起按钮
+          disabled_collapse: true,
           data: { pending: { layer: "app" } },
           props: { appsysid: sysId, appid: "app-level1-out-2" },
           center: { text: "" },
@@ -1303,13 +1323,13 @@ export default {
           id: `${sysId}-app-level1-in-1`,
           title: "Level1 In App 1",
           node_type: "app",
-          service_type: 30,
           is_permission: true,
           statusType: "normal",
           showIcon: true,
+          icon: '/g6-icons/phone-normal.svg',
           shape: "circle",
           comboId: comboId,
-          disabled_collapse: true, // 组内节点禁用展开收起按钮
+          disabled_collapse: true,
           data: { pending: { layer: "app" } },
           props: { appsysid: sysId, appid: "app-level1-in-1" },
           center: { text: "" },
@@ -1319,13 +1339,13 @@ export default {
           id: `${sysId}-app-level1-in-2`,
           title: "Level1 In App 2",
           node_type: "app",
-          service_type: 10,
           is_permission: true,
           statusType: "normal",
           showIcon: true,
+          icon: '/g6-icons/web-normal.svg',
           shape: "circle",
           comboId: comboId,
-          disabled_collapse: true, // 组内节点禁用展开收起按钮
+          disabled_collapse: true,
           data: { pending: { layer: "app" } },
           props: { appsysid: sysId, appid: "app-level1-in-2" },
           center: { text: "" },
@@ -1336,13 +1356,13 @@ export default {
           id: `${sysId}-app-warning`,
           title: "Warning App",
           node_type: "app",
-          service_type: 10,
           is_permission: true,
           statusType: "warning",
           showIcon: true,
+          icon: '/g6-icons/web-warning.svg',
           shape: "circle",
           comboId: comboId,
-          disabled_collapse: true, // 组内节点禁用展开收起按钮
+          disabled_collapse: true,
           data: { pending: { layer: "app" } },
           props: { appsysid: sysId, appid: "app-warning" },
           center: { text: "" },
@@ -1353,32 +1373,31 @@ export default {
           id: `${sysId}-app-abnormal`,
           title: "Abnormal App",
           node_type: "app",
-          service_type: 10,
           is_permission: true,
           statusType: "abnormal",
           showIcon: true,
+          icon: '/g6-icons/web-abnormal.svg',
           shape: "circle",
           comboId: comboId,
-          disabled_collapse: true, // 组内节点禁用展开收起按钮
+          disabled_collapse: true,
           data: { pending: { layer: "app" } },
           props: { appsysid: sysId, appid: "app-abnormal" },
           center: { text: "" },
           is_client: true
         },
-        // 已删除状态应用（专门用于展示 disabled 状态，is_deleted 必须配合 deleted.svg 图标使用）
+        // 已删除状态应用（专门用于展示 disabled 状态）
         {
           id: `${sysId}-app-deleted`,
           title: "Deleted App",
           node_type: "app",
-          service_type: 10,
           is_permission: true,
           statusType: "disabled",
-          is_deleted: true, // 只有使用 deleted.svg 图标的节点才设置 is_deleted
+          is_deleted: true,
           showIcon: true,
-          icon: '/g6-icons/deleted.svg', // is_deleted 必须与 deleted.svg 图标匹配
+          icon: '/g6-icons/deleted.svg',
           shape: "circle",
           comboId: comboId,
-          disabled_collapse: true, // 组内节点禁用展开收起按钮
+          disabled_collapse: true,
           data: { pending: { layer: "app" } },
           props: { appsysid: sysId, appid: "app-deleted" },
           center: { text: "" },
@@ -1389,7 +1408,6 @@ export default {
           id: `${sysId}-app-moved`,
           title: "Moved App",
           node_type: "app",
-          service_type: 10,
           is_permission: true,
           statusType: "moved",
           is_been_moved_to_other: true,
@@ -1397,7 +1415,7 @@ export default {
           icon: '/g6-icons/moved.svg',
           shape: "circle",
           comboId: comboId,
-          disabled_collapse: true, // 组内节点禁用展开收起按钮
+          disabled_collapse: true,
           data: { pending: { layer: "app" } },
           props: { appsysid: sysId, appid: "app-moved" },
           center: { text: "" },
@@ -1408,14 +1426,14 @@ export default {
           id: `${sysId}-app-user`,
           title: "User App",
           node_type: "app",
-          service_type: 10,
           is_permission: true,
           statusType: "user",
           is_user: true,
           showIcon: true,
+          icon: '/g6-icons/user.svg',
           shape: "circle",
           comboId: comboId,
-          disabled_collapse: true, // 组内节点禁用展开收起按钮
+          disabled_collapse: true,
           data: { pending: { layer: "app" } },
           props: { appsysid: sysId, appid: "app-user" },
           center: { text: "" },

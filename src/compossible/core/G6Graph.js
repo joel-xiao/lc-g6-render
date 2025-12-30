@@ -6,6 +6,7 @@ import { getLayout } from '../layouts/options';
 import { getShape } from '../shapes/items/index';
 import { layoutEdges, layoutQuadraticEdges } from '../layouts/dagre-tbt/algorithm';
 import NormalEvent from '../behaviors/normal-event/index';
+import ExpandLinkEvent from '../behaviors/expand-link-event/index';
 import { onEvent, getEvent } from '../behaviors/events/index';
 import { joinDataMapKey } from '../utils/common';
 import { mergeModel, calcNodeModelData } from '../data/format.js';
@@ -14,6 +15,7 @@ import { Caching } from '../utils/caching.js';
 function getCustomBehavior(type, event_type) {
     const behaviors = {
         'normal-event': NormalEvent,
+        'expand-link-event': ExpandLinkEvent,
     };
     const behavior = behaviors[type];
     if (!behavior) return;
@@ -51,13 +53,16 @@ export class G6Graph {
             const rect = this.el_container?.getBoundingClientRect();
             this.option.width = rect.width;
             this.option.height = rect.height;
+            
+            // 先注册自定义元素，再合并配置（因为配置合并需要从registry获取默认选项）
+            registry.registerAll(this);
+            
             const { option, minimap } = assignOptions(this.option, this.vmOption);
             this.assign_option = option;
             this.minimap = minimap;
 
             this.g6_graph = new G6.Graph(this.assign_option);
             this.g6_graph.get('canvas').set('localRefresh', false);
-            this.registerElement();
             this.addEventListener();
             this.onResize('load');
         }
@@ -333,7 +338,7 @@ export class G6Graph {
 
         if (typeof behavior === 'string') {
             const fn = getCustomBehavior(behavior, event_type);
-            fn?.(e, this);
+            fn?.(e, this, onEvent);
 
         } else {
             const fn_name = behavior.getEvent()[event_type];

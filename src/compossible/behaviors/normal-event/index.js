@@ -20,7 +20,7 @@ const NormalEvent = {
     },
 
     onNodeClick(evt, that) {
-        onEvent(['edge-running', 'disabled', 'node-collapsed'], 'click', evt, that.g6_graph, {
+        onEvent(['edge-running', 'disabled', 'node-collapsed', 'node-active'], 'click', evt, that.g6_graph, {
             g6_example: that,
         });
     },
@@ -85,7 +85,7 @@ const NormalEvent = {
     },
 
     onCanvasClick(evt, that) {
-        onEvent(['edge-running', 'edge-focus', 'disabled'], 'clear', evt, that.g6_graph, {
+        onEvent(['edge-running', 'edge-focus', 'disabled', 'node-active'], 'clear', evt, that.g6_graph, {
             g6_example: that,
         });
     },

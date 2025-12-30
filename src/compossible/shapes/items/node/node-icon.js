@@ -3,26 +3,12 @@ import { getHealthSetting } from '../../../utils/health';
 export default {
     name: 'node-icon',
     getIcon(cfg, style) {
-        return style?.icons?.[cfg.service_type] || cfg.icon || style.icon;
+        const health = getHealthSetting(cfg.statusType);
+        return style?.icon || cfg.icon || health?.icon;
     },
 
     getCfg(cfg, style) {
         let icon = this.getIcon(cfg, style);
-        if (cfg.service_type && style.icons) {
-            if (typeof cfg.service_type === 'string' && cfg.service_type.includes(',')) {
-                const services = cfg.service_type.split(',');
-                if (services.length === 2) {
-                    icon = style.icons['default2'];
-                }
-                if (services.length === 3) {
-                    icon = style.icons['default3'];
-                }
-
-                if (services.length >= 4) {
-                    icon = style.icons['default4'];
-                }
-            }
-        }
 
         return {
             icon,
@@ -58,7 +44,6 @@ export default {
                     draggable: true,
                 });
             }
-
         } else {
             const { icon } = this.getCfg(cfg, style);
             group.addShape('image', {
@@ -77,7 +62,7 @@ export default {
         }
     },
 
-    async update(item, cfg, style) {
+    async update(item, cfg) {
         const group = item.get('group');
         const children = group.get('children');
         for (let shape of children) {

@@ -3,7 +3,7 @@ export default function getDefaultNode(type) {
         'node-icon': {
             type: "node-icon",
             title: '--',
-            size: 40,
+            size: 70,
             style: {
                 fill: '#fff',
                 stroke: '#fff',
@@ -31,8 +31,8 @@ export default function getDefaultNode(type) {
             icon: {
                 show: true,
                 // img: '...',
-                width: 20,
-                height: 20,
+                width: 40,
+                height: 40,
             },
             // 状态样式
             stateStyles: {
