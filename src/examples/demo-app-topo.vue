@@ -52,7 +52,7 @@
 <script>
 import { debounce } from "lodash";
 import LcG6 from "../index.vue";
-import DemoAppBehavior from '../compossible/behaviors/demo-app-event/index.js';
+import AppTopologyEvent from '../compossible/behaviors/app-topology-event/index.js';
 import {
   getLayoutData,
   filterSelfNodeData,
@@ -189,7 +189,7 @@ export default {
       return {
         legend: true,
         minimap: true,
-        customBehaviors: [DemoAppBehavior, 'collapse-expand-combo', 'drag-combo'],
+        customBehaviors: [AppTopologyEvent, 'collapse-expand-combo', 'drag-combo'],
         tooltip: {
           show: true,
           width: "500px",
