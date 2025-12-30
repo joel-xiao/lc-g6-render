@@ -1,4 +1,6 @@
 import G6 from "@antv/g6";
+import { getDagreTbtOptions } from './dagre-tbt/options';
+import { getDagreTgbOptions } from './dagre-tgb/options';
 
 export function getLayout(layout, options) {
     const data = {
@@ -49,17 +51,9 @@ export function getLayout(layout, options) {
             type: 'random',
         },
 
-        'dagre-tbt': {
-            type: 'dagre-tbt',
-            nodesep: 70,
-            ranksep: 80,
-        },
+        'dagre-tbt': getDagreTbtOptions(),
 
-        'dagre-tgb': {
-            type: 'dagre-tgb',
-            nodesep: 70,
-            ranksep: 80,
-        }
+        'dagre-tgb': getDagreTgbOptions()
     };
     return data[layout] || data['dagre'];
 }
