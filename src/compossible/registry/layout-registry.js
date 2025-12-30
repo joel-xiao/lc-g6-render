@@ -1,5 +1,11 @@
 import G6 from "@antv/g6";
-import { registerLayout } from '../layouts/dagre';
+import { registerLayout as dagreTgb } from '../layouts/dagre';
+import { registerLayout as dagreTbt } from '../layouts/dagre-tbt/index';
+
+const registerLayout = {
+    ...dagreTgb,
+    ...dagreTbt
+};
 
 class LayoutRegistry {
     constructor() {

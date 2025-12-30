@@ -1,7 +1,7 @@
-import { layoutEdges, layoutGridCombo, layoutNodes, layoutNodesOffset } from './dagre-tbt/methods';
+import { layoutEdges, layoutCombo, layoutNodes, layoutNodesOffset } from './methods';
 
 export const registerLayout = {
-    'dagre-tgb': {
+    'dagre-tbt': {
         layout: {
             getDefaultCfg() {
                 return {
@@ -25,12 +25,12 @@ export const registerLayout = {
             execute() {
                 try {
                     var self = this;
-                    let nodes = self.nodes;
+                    var nodes = self.nodes.sort((a, b) => a.node_depth - b.node_depth);
                     const sep = (nodes[0]?.size || 70) + self.nodesep + self.ranksep;
 
                     if (self.combos.length) {
                         for (const combo of self.combos) {
-                            layoutGridCombo(nodes, combo, { ...self, sep });
+                            layoutCombo(nodes, combo, { ...self, sep });
                         }
                     } else {
                         const { nodeDepthMap, nodesMap } = layoutNodes(nodes, undefined, undefined, { ...self, sep });
@@ -52,5 +52,5 @@ export const registerLayout = {
             updateCfg(cfg) { },
             destroy() { },
         }
-    },
+    }
 }

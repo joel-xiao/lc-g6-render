@@ -1,4 +1,4 @@
-import { Storage } from '../utils/storage';
+import { Storage } from '../../utils/storage';
 
 export function layoutCombo(nodes, combo, self) {
     const { nodeDepthMap, nodesMap, center_y } = layoutNodes(nodes, combo, undefined, self);
