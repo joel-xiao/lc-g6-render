@@ -1,7 +1,7 @@
 
 import G6 from "@antv/g6";
-import { fittingString, getRectSize } from '../../utils/text';
-import { getHealthSetting } from '../../utils/health';
+import { fittingString, getRectSize } from '../../../utils/text';
+import { getHealthSetting } from '../../../utils/health';
 import { getComponent } from '../../items/index';
 
 export function getComboShape(name) {

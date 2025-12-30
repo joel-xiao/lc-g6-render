@@ -1,5 +1,5 @@
 import G6 from "@antv/g6";
-import { getHealthSetting } from '../../utils/health';
+import { getHealthSetting } from '../../../utils/health';
 import { getComboShape, getComboMethods } from './items';
 import { getComponent } from '../../items/index';
 import defaults from './options';
