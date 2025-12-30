@@ -80,10 +80,15 @@ function getOptions() {
 }
 let g6_graph = new G6Graph(getOptions());
 
-watch(() => props.options, () => {
   g6_graph.updateOptions(getOptions());
   g6_graph.render();
 })
+
+watch(() => props.data, (newData) => {
+  if (newData) {
+    setData(newData);
+  }
+}, { deep: true })
 
 function onSelectLayout(layout) {
   g6_graph.updateLayout(layout.value);
