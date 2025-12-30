@@ -1,9 +1,7 @@
 import { cloneDeep } from 'lodash';
 import G6 from "@antv/g6";
 import { graph_default_option } from './default-options';
-import { getDefaultNode } from '../shapes/node/defaults';
-import { getDefaultEdge } from '../shapes/edge/defaults';
-import { getDefaultCombo } from '../shapes/combo/defaults';
+import { registry } from './registry';
 import { getLayout } from '../layouts/options';
 import { getMinimap } from '../plugins/index';
 
@@ -32,16 +30,28 @@ export const dataMerge = function (data, props) {
 export function assignOptions(option, vmOption) {
     const assign_option = cloneDeep(graph_default_option);
 
-    if (option.defaultNode) {
-        if (option.defaultNode.type) assign_option.defaultNode = getDefaultNode(option.defaultNode.type);
+    if (option.defaultNode?.type) {
+        const type = option.defaultNode.type;
+        const definition = registry.node.get(type);
+        if (definition?.options) {
+            assign_option.defaultNode = typeof definition.options === 'function' ? definition.options(type) : definition.options;
+        }
     }
 
-    if (option.defaultEdge) {
-        if (option.defaultEdge.type) assign_option.defaultEdge = getDefaultEdge(option.defaultEdge.type);
+    if (option.defaultEdge?.type) {
+        const type = option.defaultEdge.type;
+        const definition = registry.edge.get(type);
+        if (definition?.options) {
+            assign_option.defaultEdge = typeof definition.options === 'function' ? definition.options(type) : definition.options;
+        }
     }
 
-    if (option.defaultCombo) {
-        if (option.defaultCombo.type) assign_option.defaultCombo = getDefaultCombo(option.defaultCombo.type);
+    if (option.defaultCombo?.type) {
+        const type = option.defaultCombo.type;
+        const definition = registry.combo.get(type);
+        if (definition?.options) {
+            assign_option.defaultCombo = typeof definition.options === 'function' ? definition.options(type) : definition.options;
+        }
     }
 
     dataMerge(assign_option, option);

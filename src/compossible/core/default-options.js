@@ -1,8 +1,5 @@
 import { getModels } from '../behaviors/modes';
 import { getLayout } from '../layouts/options';
-import { getDefaultNode } from '../shapes/node/defaults';
-import { getDefaultEdge } from '../shapes/edge/defaults';
-import { getDefaultCombo } from '../shapes/combo/defaults';
 
 // 临时导入旧的配置生成函数，后续重构时会移除这些依赖
 
@@ -26,7 +23,7 @@ export const graph_default_option = {
     },
 
     layout: getLayout(),
-    defaultNode: getDefaultNode(),
-    defaultEdge: getDefaultEdge(),
-    defaultCombo: getDefaultCombo(),
+    defaultNode: {},
+    defaultEdge: {},
+    defaultCombo: {},
 };

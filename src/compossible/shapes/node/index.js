@@ -1,4 +1,4 @@
-import NodeIcon from './node-icon/index';
+import * as NodeIcon from './node-icon/index';
 
 export function getRegisterNode(g6_example) {
     // Inject g6_example into the definition or bind it
@@ -11,8 +11,9 @@ export function getRegisterNode(g6_example) {
 
     return {
         'node-icon': {
+            register: 'rect',
             node: nodeDef,
-            // If there are other register options/mixins
+            options: NodeIcon.defaults,
         }
     };
 }
