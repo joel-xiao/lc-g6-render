@@ -1,8 +1,9 @@
-export function isNotAnimate() {
-    const is = window.getGlobalConfig?.('g_g6_topo_animate');
+export function isNotAnimate(graph) {
+    if (!graph) return false;
+    const is = graph.get('topo_animate');
     return is === false;
 }
 
-export function isAnimate() {
-    return !isNotAnimate();
+export function isAnimate(graph) {
+    return !isNotAnimate(graph);
 }

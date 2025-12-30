@@ -59,7 +59,9 @@ export default {
             if (shape.get('name')?.includes(shape_name)) {
                 if (shape.attr('show') === false) return;
 
-                if (isNotAnimate()) {
+                const graph = item.get('graph');
+
+                if (isNotAnimate(graph)) {
                     shape.attr('opacity', value ? 0.3 : 0);
                     shape.attr('lineWidth', value ? shape.get('shape-size') + (8 * sum) : 0);
                 } else {

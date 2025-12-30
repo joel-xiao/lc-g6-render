@@ -2,7 +2,7 @@ import { isNotAnimate } from '../utils';
 
 export default {
     start(runShape, item) {
-        if (isNotAnimate()) return;
+        if (isNotAnimate(item.get('graph'))) return;
 
         if (runShape.get('animate-ripple')) return;
         runShape.set('animate-ripple', true);

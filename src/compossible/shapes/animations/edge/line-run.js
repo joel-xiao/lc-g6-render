@@ -1,8 +1,8 @@
 import { isNotAnimate } from '../utils';
 
 export default {
-    start(runShape, { keyShape }) {
-        if (isNotAnimate()) return;
+    start(runShape, { keyShape, graph }) {
+        if (isNotAnimate(graph)) return;
 
         runShape.animate(
             (ratio) => {
