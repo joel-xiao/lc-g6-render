@@ -52,6 +52,7 @@
 <script>
 import { debounce } from "lodash";
 import LcG6 from "../index.vue";
+import DemoAppBehavior from '../compossible/behaviors/demo-app-event/index.js';
 import {
   getLayoutData,
   filterSelfNodeData,
@@ -188,7 +189,7 @@ export default {
       return {
         legend: true,
         minimap: true,
-        customBehaviors: [this.getBehavior(), 'collapse-expand-combo', 'drag-combo'],
+        customBehaviors: [DemoAppBehavior, 'collapse-expand-combo', 'drag-combo'],
         tooltip: {
           show: true,
           width: "500px",
@@ -1659,186 +1660,7 @@ export default {
       });
     },
 
-    getBehavior() {
-      return {
-        getEvent() {
-          return {
-            "node:click": "node:click",
-            "node:mouseenter": "node:mouseenter",
-            "node:mouseleave": "node:mouseleave",
-            "combo:click": "combo:click",
-            "combo:mouseenter": "combo:mouseenter",
-            "combo:mouseleave": "combo:mouseleave",
-            "edge:click": "edge:click",
-            "edge:mouseenter": "edge:mouseenter",
-            "edge:mouseleave": "edge:mouseleave",
-            "canvas:click": "canvas:click",
-            "canvas:mousedown": "canvas:mousedown",
-          };
-        },
 
-        "node:click"(evt, that, onEvent) {
-          const combo = that.g6_graph.getCombos()[0]?.getModel();
-          const eventName = evt.target?.get("event-name");
-          const model = evt.item.getModel();
-
-          if (combo?.collapsed) {
-            if (model.is_deleted) return;
-
-            onEvent(
-              ["edge-running", "disabled", "node-collapsed"],
-              "click",
-              evt,
-              that.g6_graph,
-              {
-                g6_example: that,
-              },
-            );
-          } else {
-            if (model.is_external || model.is_deleted) return;
-
-            if (eventName === "node-collapsed") {
-              onEvent(["node-collapsed"], "click", evt, that.g6_graph, {
-                g6_example: that,
-              });
-            } else {
-              onEvent(["node-active"], "click", evt, that.g6_graph, {
-                g6_example: that,
-              });
-
-              onEvent(
-                ["edge-running", "disabled"],
-                "setCachingState",
-                evt,
-                that.g6_graph,
-                {
-                  g6_example: that,
-                },
-              );
-            }
-          }
-        },
-
-        "node:mouseenter"(evt, that, onEvent) {
-          const model = evt.item.getModel();
-
-          const caching_current_model = "outer.event.node-click.current";
-          if (that.caching.hasCaching(caching_current_model)) {
-            model.disabled_collapse = true;
-          }
-
-          const events = ["edge-running", "disabled", "node-collapsed"];
-          onEvent(events, "enter", evt, that.g6_graph, {
-            g6_example: that,
-          });
-        },
-
-        "node:mouseleave"(evt, that, onEvent) {
-          const model = evt.item.getModel();
-
-          const caching_current_model = "outer.event.node-click.current";
-          if (that.caching.hasCaching(caching_current_model)) {
-            model.disabled_collapse = getNodeDisabledCollapse(model);
-          }
-
-          const events = ["edge-running", "disabled", "node-collapsed"];
-
-          onEvent(events, "leave", evt, that.g6_graph, {
-            g6_example: that,
-          });
-        },
-
-        "combo:click"(evt, that, onEvent) {
-          const model = evt.item.getModel();
-          const eventName = evt.target?.get("event-name");
-
-          if (eventName === "combo-collapsed") {
-            return;
-          }
-
-          if (model.collapsed) {
-            onEvent(
-              ["edge-running", "disabled", "node-collapsed"],
-              "click",
-              evt,
-              that.g6_graph,
-              {
-                g6_example: that,
-              },
-            );
-          } else {
-            onEvent(
-              ["edge-running", "edge-focus", "disabled", "node-active"],
-              "clear",
-              evt,
-              that.g6_graph,
-              {
-                g6_example: that,
-              },
-            );
-          }
-        },
-
-        "combo:mouseenter"(evt, that, onEvent) {
-          const model = evt.item.getModel();
-          if (model.collapsed) {
-            onEvent(
-              ["edge-running", "node-collapsed", "disabled"],
-              "enter",
-              evt,
-              that.g6_graph,
-              {
-                g6_example: that,
-              },
-            );
-          }
-        },
-
-        "combo:mouseleave"(evt, that, onEvent) {
-          const model = evt.item.getModel();
-          if (model.collapsed) {
-            onEvent(
-              ["edge-running", "node-collapsed", "disabled"],
-              "leave",
-              evt,
-              that.g6_graph,
-              {
-                g6_example: that,
-              },
-            );
-          }
-        },
-
-        "edge:mouseenter"(evt, that, onEvent) {
-          onEvent(["edge-focus"], "enter", evt, that.g6_graph);
-        },
-
-        "edge:mouseleave"(evt, that, onEvent) {
-          onEvent(["edge-focus"], "leave", evt, that.g6_graph);
-        },
-
-        "canvas:click"(evt, that, onEvent) {
-          // 点击画布时恢复所有节点显示
-          if (that.g6_example && that.g6_example.vmOption) {
-            that.g6_example.vmOption.restoreAllNodes?.();
-          }
-          
-          onEvent(
-            ["edge-running", "edge-focus", "disabled", "node-active"],
-            "clear",
-            evt,
-            that.g6_graph,
-            {
-              g6_example: that,
-            },
-          );
-        },
-
-        "canvas:mousedown"(evt, that, onEvent) {
-          onEvent(["edge-focus"], "clear", evt, that.g6_graph);
-        },
-      };
-    },
     onAfterEvent(event_type, e) {
       const event = {
         "edge:click": (e) => this.onEdgeClick(e.item.getModel()),
