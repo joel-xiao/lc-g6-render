@@ -45,8 +45,8 @@ export default {
         // 使用 expand-link-event behavior 处理所有交互
         customBehaviors: ["expand-link-event"],
         layout: { type: "depth-grid" },
-        activeNodes: [this.centerId, this.app_center_id],
-        centerNodes: [this.centerId, this.app_center_id],
+        activeNodes: [this.centerId],
+        centerNodes: [this.centerId],
         tooltip: {
           show: true,
           width: "300px",
@@ -145,13 +145,7 @@ export default {
     // 展开节点时获取数据
     getExpandData(model, edgeType, depth) {
       const newData = getMockExpandData(model, edgeType, depth);
-      
-      // 添加到本地数据
-      if (newData.nodes.length > 0) {
-        this.data.nodes.push(...newData.nodes);
-        this.data.edges.push(...newData.edges);
-      }
-      
+      // 注意：不在这里添加到 this.data，由 expand-link-event 的 addData 方法处理
       return newData;
     },
 

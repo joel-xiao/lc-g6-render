@@ -244,8 +244,6 @@ const ExpandLinkEvent = {
             not_edges: insertEdges,
             g6_example: that,
         });
-
-        that.calcTopologyData();
     },
 
     // 取消节点边高亮
@@ -277,8 +275,6 @@ const ExpandLinkEvent = {
 
         // 清除高亮状态
         onEvent(["edge-running", "disabled"], "clear", evt, that.g6_graph, { g6_example: that });
-
-        that.calcTopologyData();
     },
 
     onNodeMouseEnter(evt, that, onEvent) {

@@ -59,8 +59,6 @@ export default {
                         g6_graph.removeItem(value);
                     }
                 }
-
-                option.g6_example.calcTopologyData();
             }, 50)
 
             function collapsed(parent, edges, is_out, caching_data, depth = 0) {
