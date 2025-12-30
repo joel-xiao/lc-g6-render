@@ -435,6 +435,7 @@ export class G6Graph {
 
             if (this.is_set_data) {
                 this.focusNode();
+                this.activeNode();
                 this.is_set_data = undefined;
             }
 
