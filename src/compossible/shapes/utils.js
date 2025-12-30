@@ -33,7 +33,8 @@ export function getGraphShape(type, { cfg, style }) {
         };
     }
 
-    attrs.lineWidth = style.lineWidth || cfg.style.lineWidth || 1;
+    const { lineWidth } = style || {};
+    attrs.lineWidth = lineWidth || cfg.style.lineWidth || 1;
 
     return {
         attrs,
