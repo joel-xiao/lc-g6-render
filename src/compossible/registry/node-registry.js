@@ -1,5 +1,5 @@
 import G6 from "@antv/g6";
-import { getRegisterNode } from '../shapes/node/index';
+import { getRegisterNode } from '../shapes/index';
 
 class NodeRegistry {
     constructor() {

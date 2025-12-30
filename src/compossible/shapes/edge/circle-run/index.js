@@ -1,5 +1,8 @@
-import { getComponent } from '../components/index';
+import { getComponent } from '../../components/index';
 import { getEdgeShape } from './items';
+import defaults from './options';
+
+export { getEdgeShape, defaults };
 
 export function getCommonEdge(edge_type, g6_example) {
     const commonEdge = {

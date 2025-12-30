@@ -1,7 +1,10 @@
 import G6 from "@antv/g6";
 import { getHealthSetting } from '../../utils/health';
 import { getComboShape, getComboMethods } from './items';
-import { getComponent } from '../components/index';
+import { getComponent } from '../../components/index';
+import defaults from './options';
+
+export { getComboShape, getComboMethods, defaults };
 
 const CustomCombo = {
     register: 'rect',

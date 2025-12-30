@@ -126,4 +126,5 @@ const NodeIcon = {
     },
 }
 
+export { defaults };
 export default NodeIcon;

@@ -1,5 +1,5 @@
 import G6 from "@antv/g6";
-import { getRegisterEdge } from '../shapes/edge/index';
+import { getRegisterEdge } from '../shapes/index';
 
 class EdgeRegistry {
     constructor() {

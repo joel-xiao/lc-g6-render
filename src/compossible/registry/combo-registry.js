@@ -1,5 +1,5 @@
 import G6 from "@antv/g6";
-import { getRegisterCombo } from '../shapes/combo/index';
+import { getRegisterCombo } from '../shapes/index';
 
 class ComboRegistry {
     constructor() {
