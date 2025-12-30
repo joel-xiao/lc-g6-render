@@ -95,14 +95,19 @@ export default {
 
         if (model.disabled_collapse) return;
 
-        const children = item.get('group').get('children').filter(item => item.get('name').includes(this.name));
-        const is_show_collapse = value.name === 'show_collapse';
-        const is_collapsed_name = value.name?.startsWith('collapsed-name') || value.name === 'collapsed-name';
-        const is_disabled_name = value.name?.startsWith('disabled-name') || value.name === 'disabled-name';
+        // 兼容 value 为布尔值或对象的情况
+        const valueObj = typeof value === 'object' ? value : { value };
+        if (!valueObj.name) return;
+
+        const children = item.get('group')?.get('children')?.filter(item => item.get('name')?.includes(this.name)) || [];
+        const is_show_collapse = valueObj.name === 'show_collapse';
+        const is_collapsed_name = valueObj.name?.startsWith('collapsed-name') || valueObj.name === 'collapsed-name';
+        const is_disabled_name = valueObj.name?.startsWith('disabled-name') || valueObj.name === 'disabled-name';
 
         if (is_collapsed_name || is_show_collapse || is_disabled_name) {
             children.forEach((item) => {
                 const children = item.get('children');
+                if (!children) return;
 
                 children.forEach(child => {
                     const arrow_node_edge_type = child.get('node-edge-type');
@@ -110,16 +115,16 @@ export default {
                     const disabled_collapse = model[disabled_name];
 
                     // 当前节点某一个箭头显示隐藏处理
-                    if (is_disabled_name && arrow_node_edge_type === value['node-edge-type']) {
+                    if (is_disabled_name && arrow_node_edge_type === valueObj['node-edge-type']) {
                         // 更新状态
-                        model[disabled_name] = value.value;
-                        this.setDisabled(child, value.value);
-                        child.set('disabled-event', value.value);
+                        model[disabled_name] = valueObj.value;
+                        this.setDisabled(child, valueObj.value);
+                        child.set('disabled-event', valueObj.value);
                         return;
                     }
 
                     // 当前节点某一个箭头显示隐藏处理
-                    if (disabled_name === value.name) {
+                    if (disabled_name === valueObj.name) {
                         this.setDisabled(child, disabled_collapse);
                         child.set('disabled-event', disabled_collapse);
                         return;
@@ -130,12 +135,12 @@ export default {
 
                     const collapsed_name = child.get('collapsed-name');
                     // collapse 箭头展开收起
-                    if (is_collapsed_name && arrow_node_edge_type === value['node-edge-type']) {
+                    if (is_collapsed_name && arrow_node_edge_type === valueObj['node-edge-type']) {
                         const name = child.get('name');
                         if (!name.endsWith('-polygon')) return;
 
                         // 更新状态
-                        model[collapsed_name] = value.value;
+                        model[collapsed_name] = valueObj.value;
 
                         let position = child.get('position-name');
                         const base_cfg = this.getCfg(model, position);
@@ -145,12 +150,12 @@ export default {
                     }
 
                     // collapse 箭头展开收起
-                    if (collapsed_name === value.name) {
+                    if (collapsed_name === valueObj.name) {
                         const name = child.get('name');
                         if (!name.endsWith('-polygon')) return;
 
                         // 更新状态
-                        model[collapsed_name] = value.value;
+                        model[collapsed_name] = valueObj.value;
 
                         let position = child.get('position-name');
                         const base_cfg = this.getCfg(model, position);
@@ -160,7 +165,7 @@ export default {
 
                     // 当前节点所有的 arrow 显示隐藏处理
                     if (is_show_collapse) {
-                        this.setDisabled(child, !value.value);
+                        this.setDisabled(child, !valueObj.value);
                         return;
                     }
                 })

@@ -7,30 +7,12 @@ function getNodeDisabledCollapse(node) {
         node.is_user ||
         node.is_external ||
         node.is_deleted ||
-        node.node_type === "app" || // 应用节点（组内节点）禁用展开收起
         !!node.comboId // 在组内的节点都禁用展开收起
     );
 }
 
 const ExpandLinkEvent = {
-    getEvent(event_type) { // If getting all events
-        if (!event_type) {
-            return {
-                "node:click": "onNodeClick",
-                "node:mouseenter": "onNodeMouseEnter",
-                "node:mouseleave": "onNodeMouseLeave",
-                "combo:click": "onComboClick",
-                "combo:mouseenter": "onComboMouseEnter",
-                "combo:mouseleave": "onComboMouseLeave",
-                "edge:click": "onEdgeClick",
-                "edge:mouseenter": "onEdgeMouseEnter",
-                "edge:mouseleave": "onEdgeMouseLeave",
-                "canvas:click": "onCanvasClick",
-                "canvas:mousedown": "onCanvasMouseDown",
-            };
-        }
-
-        // If getting specific event (following normal-event pattern)
+    getEvent(event_type) {
         const events = {
             "node:click": "onNodeClick",
             "node:mouseenter": "onNodeMouseEnter",

@@ -47,7 +47,7 @@ export default {
         const that_cfg = this.getCfg();
         const shape_name = this.name;
         const group = item.get('group');
-        const group_children = group.get('children');
+        const group_children = group.get('children') || [];
         group_children.forEach(shape => {
             if (shape.get('name')?.includes(shape_name)) {
                 shape.attr('stroke', style.stroke + that_cfg.opacity);
@@ -58,7 +58,8 @@ export default {
     setState(item, { name, value, style }) {
         const shape_name = this.name;
         const group = item.get('group');
-        const group_children = group.get('children');
+        const group_children = group?.get('children');
+        if (!group_children) return;
         let sum = 0;
         group_children.forEach(shape => {
             if (shape.get('name')?.includes(shape_name)) {
@@ -88,7 +89,8 @@ export default {
     hide(item) {
         const shape_name = this.name;
         const group = item.get('group');
-        const group_children = group.get('children');
+        const group_children = group?.get('children');
+        if (!group_children) return;
 
         group_children.forEach(shape => {
             if (shape.get('name')?.includes(shape_name)) {
@@ -102,7 +104,8 @@ export default {
     show(item) {
         const shape_name = this.name;
         const group = item.get('group');
-        const group_children = group.get('children');
+        const group_children = group?.get('children');
+        if (!group_children) return;
 
         group_children.forEach(shape => {
             if (shape.get('name')?.includes(shape_name)) {

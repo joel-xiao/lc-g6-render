@@ -1872,10 +1872,11 @@ export default {
             const newNode = {
               id: mockNodeId,
               title: `Level${node_depth} ${type === 'out' ? 'Out' : 'In'} System ${i + 1}`,
+              type: "node-icon",
               node_type: "sys",
               is_permission: true,
               statusType: Math.random() > 0.8 ? 'warning' : 'normal',
-              showIcon: false,
+              showIcon: true,
               data: { 
                 pending: { layer: "sys" },
                 ...this.getMockStatsData()
@@ -1894,6 +1895,7 @@ export default {
               source: sourceId,
               target: targetId,
               type: "cubic-v-circle-run",
+              edge_depth: newNode.node_depth,
               data: { 
                 pending: { layer: "sys" },
                 ...this.getMockLinkData()
@@ -1917,6 +1919,7 @@ export default {
             const newNode = {
               id: mockNodeId,
               title: `Level${node_depth} ${type === 'out' ? 'Out' : 'In'} App ${i + 1}`,
+              type: "node-icon",
               node_type: "app",
               service_type: [10, 20, 30][Math.floor(Math.random() * 3)],
               is_permission: true,
@@ -1945,6 +1948,7 @@ export default {
               source: sourceId,
               target: targetId,
               type: "line-circle-run",
+              edge_depth: newNode.node_depth,
               data: { 
                 pending: { layer: "app" },
                 ...this.getMockLinkData()
@@ -1971,16 +1975,13 @@ export default {
         combos: []
       };
       
-      // 重新计算拓扑深度
-      this.calculateTopologyDepth(
-        [...this.data.nodes, ...newNodes],
-        [...this.data.edges, ...newEdges],
-        this.data.nodes.find(n => n.id === `${this.topologyOption.appsysid}-`)?.id || model.id
-      );
-      
-      // 更新数据
+      // 更新数据（先添加到 this.data，再计算深度）
       this.data.nodes.push(...newNodes);
       this.data.edges.push(...newEdges);
+      
+      // 重新计算拓扑深度（会更新所有节点和边的 depth）
+      const centerNodeId = `${this.topologyOption.appsysid}-`;
+      this.calculateTopologyDepth(this.data.nodes, this.data.edges, centerNodeId);
       
       // 使用 addData 添加到 G6 图
       g6.addData({ e, node_edge_type: edgeType, model }, newData);

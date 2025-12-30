@@ -66,8 +66,12 @@ export const getAnchorPoints = function (name) {
         },
         'center': {
             getNodeAnchorPoints: (cfg, g6_graph) => {
+                // 返回四个边缘锚点，让 G6 自动选择最近的锚点
                 return [
-                    [0.5, 0.5], // center
+                    [0.5, 0], // top
+                    [1, 0.5], // right
+                    [0.5, 1], // bottom
+                    [0, 0.5], // left
                 ];
             },
             // ...

@@ -42,7 +42,6 @@ export function getNodeDisabledCollapse(node) {
         node.is_user ||
         node.is_external ||
         node.is_deleted ||
-        node.node_type === "app" || // Application nodes (nodes in groups) disable expand/collapse
         !!node.comboId // Nodes in groups disable expand/collapse
     );
 }

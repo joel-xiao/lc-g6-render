@@ -3,6 +3,7 @@ export default function getDefaultNode(type) {
         'node-icon': {
             type: "node-icon",
             title: '--',
+            label: '', // 禁用 G6 默认的 label 显示
             size: 70,
             style: {
                 fill: '#fff',
@@ -15,6 +16,7 @@ export default function getDefaultNode(type) {
                 style: {
                     fill: '#fff',
                     fontSize: 12,
+                    opacity: 0, // 隐藏默认 label
                 },
             },
             // 连接桩配置

@@ -143,7 +143,8 @@ export class G6Graph {
             }
         });
 
-        this.layoutQuadraticEdges(data.edges, data.nodes);
+        // 使用所有边和节点进行布局计算
+        this.layoutQuadraticEdges();
 
         this.g6_graph.layout();
 

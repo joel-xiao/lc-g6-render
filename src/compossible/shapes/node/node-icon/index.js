@@ -121,7 +121,7 @@ const NodeIcon = {
 
         getComponent('group').disabled(g6_example, item, name, value);
 
-        if (name === 'node-active') {
+        if (name === 'node-active' || name === 'selected') {
             const status = getHealthSetting(model.statusType) || model;
             getComponent('state-halo').setState(item, { name, value, style: status });
         }
