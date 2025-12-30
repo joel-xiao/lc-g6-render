@@ -72,7 +72,7 @@ export default {
                 } else {
                     shape.attr('opacity', value ? 1 : 0);
 
-                    if (style && style.fill) {
+                    if (value && style && style.fill) {
                         getAnimation('ripple').start(shape, item);
                     } else {
                         getAnimation('ripple').stop(shape, item);
