@@ -1,5 +1,5 @@
 import G6 from "@antv/g6";
-import { getTooltipStatus, getHealthSetting } from '../../../utils/health';
+import { getTooltipStatus, getHealthSetting } from '../../../plugins/health-legend';
 import { getAnchorPoints } from '../../utils';
 import { getComponent } from '../../items';
 import defaults from './options';

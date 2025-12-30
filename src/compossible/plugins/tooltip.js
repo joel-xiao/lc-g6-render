@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash'
-import { getTooltipStatus } from '../utils/index'
+import { getTooltipStatus } from './health-legend'
 
 export async function getContent(model, options, item_vm, refresh = false, id = '') {
     let curr_model = model;

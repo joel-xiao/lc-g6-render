@@ -8,7 +8,7 @@
       <slot name="tooltip" :model="slotProps.model"></slot>
     </template>
   </LcTooltip>
-  <LcLegend ref="legendRef" v-if="options?.legend" @item-check="onCheckLegend"/>
+  <LcHealthLegend ref="healthLegendRef" v-if="options?.healthLegend" @item-check="onCheckHealthLegend"/>
   <LcZoom size="mini" class="lc-g6-zoom" ref="zoomRef" :max="zoom.max" :min="zoom.min" @zoom="onZoom" />
   <LcG6Loading ref="loadingRef"/>
   
@@ -31,13 +31,17 @@ import LcLoadingIcon from "./lc-loading-icon.vue";
 import LcButtons from './lc-g6-buttons.vue'
 import LcTooltip from './lc-g6-tooltip.vue'
 import LcTextTooltip from './lc-g6-text-tooltip.vue'
-import LcLegend from './lc-g6-legend.vue'
+import LcHealthLegend from './lc-g6-health-legend.vue'
 import LcG6Loading from './lc-g6-loading.vue'
 import LcZoom from "./lc-zoom.vue";
 import { onMounted, ref, reactive ,watch, onBeforeUnmount, nextTick  } from 'vue'
 import { G6Graph } from './compossible/g6'
 import { getUuid } from './compossible/utils/common.js'
-import { noLogicStatusType } from './compossible/utils/health.js'
+import { 
+  initHealthPlugin,
+  noLogicStatusType, 
+  getHealthSetting,
+} from './compossible/plugins/health-legend.js'
 import { toG6Data } from './compossible/data/format.js'
 import { onEvent as onG6Event, isEvent as isG6Event } from './compossible/behaviors/events/index.js'
 import { onComponentEvent } from './compossible/behaviors/components/index.js'
@@ -80,6 +84,11 @@ function getOptions() {
   };
 }
 let g6_graph = new G6Graph(getOptions());
+
+// 初始化健康度图例插件（通过 options.healthLegend 配置）
+if (props.options?.healthLegend) {
+  initHealthPlugin(props.options.healthLegend);
+}
 
 watch(() => props.options, () => {
   g6_graph.updateOptions(getOptions());
@@ -153,7 +162,7 @@ function onG6ComponentEvent(event_type, e, options) {
   onComponentEvent(['custom-text-tooltip'], event_type, e, g6_graph.getGraph(), textTooltipRef.value, {...options, g6_example: g6_graph});
   onComponentEvent(['custom-tooltip'], event_type, e, g6_graph.getGraph(), tooltipRef.value, {...options, g6_example: g6_graph});
   onComponentEvent(['custom-loading'], event_type, e, g6_graph.getGraph(), loadingRef.value, {...options, g6_example: g6_graph});
-  onComponentEvent(['custom-legend'], event_type, e, g6_graph.getGraph(), legendRef.value, {...options, g6_example: g6_graph});
+  onComponentEvent(['custom-health-legend'], event_type, e, g6_graph.getGraph(), healthLegendRef.value, {...options, g6_example: g6_graph});
 }
 
 defineExpose({
@@ -177,7 +186,7 @@ defineExpose({
   stopAnimate: g6_graph.stopAnimate.bind(g6_graph),
   clearEvents: g6_graph.clearEvents.bind(g6_graph),
   activeNodes: g6_graph.activeNode.bind(g6_graph),
-  noLogicStatusType: noLogicStatusType
+  noLogicStatusType,
 });
 
 function onEvent(event_type, e, ...args) {
@@ -195,9 +204,9 @@ function onTooltipHide() {
   return onG6Event(['edge-focus'], 'clear', null, g6_graph.getGraph());
 }
 
-const legendRef = ref();
-function onCheckLegend(item) {
-  onComponentEvent(['custom-legend'], 'check', null, g6_graph.getGraph(), legendRef.value, {g6_example: g6_graph});
+const healthLegendRef = ref();
+function onCheckHealthLegend(item) {
+  onComponentEvent(['custom-health-legend'], 'check', null, g6_graph.getGraph(), healthLegendRef.value, {g6_example: g6_graph});
 }
 
 

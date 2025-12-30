@@ -8,7 +8,7 @@
 
 <script setup>
 import { computed, ref, onMounted } from "vue";
-import { getHealthSetting } from './compossible/utils/health'
+import { getHealthSetting } from './compossible/plugins/health-legend'
 const emit = defineEmits(['item-check']);
 
 const items = ref([]);

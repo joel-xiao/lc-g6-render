@@ -1,13 +1,13 @@
 import CustomTextTooltip from './custom-text-tooltip';
 import CustomTooltip from './custom-tooltip';
-import CustomLegend from './custom-legend';
+import CustomHealthLegend from './custom-health-legend';
 import CustomLoading from './custom-loading';
 import { isEvent } from '../events/index';
 
 const components = {
     'custom-text-tooltip': CustomTextTooltip,
     'custom-tooltip': CustomTooltip,
-    'custom-legend': CustomLegend,
+    'custom-health-legend': CustomHealthLegend,
     'custom-loading': CustomLoading,
 };
 
