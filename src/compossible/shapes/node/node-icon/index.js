@@ -126,5 +126,19 @@ const NodeIcon = {
     },
 }
 
+export function getRegister(g6_example) {
+    const nodeDef = { ...NodeIcon };
+    nodeDef.g6_graph = g6_example.g6_graph;
+    nodeDef.g6_example = g6_example;
+
+    return {
+        'node-icon': {
+            register: 'rect',
+            node: nodeDef,
+            options: defaults,
+        }
+    };
+}
+
 export { defaults };
 export default NodeIcon;
