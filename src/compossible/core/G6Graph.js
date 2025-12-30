@@ -2,7 +2,7 @@ import G6 from "@antv/g6";
 import { assignOptions } from './option-merger';
 import { registry } from './registry';
 import { getLayout } from '../layouts/options';
-import { layoutEdges, layoutQuadraticEdges } from '../layouts/dagre-tbt/algorithm';
+import { layoutEdges, layoutQuadraticEdges } from '../layouts/depth-vertical/algorithm';
 import { onEvent } from '../behaviors/events/index';
 import { mergeModel, calcNodeModelData } from '../data/format.js';
 import { Caching } from '../utils/caching.js';

@@ -36,7 +36,7 @@ export default {
         legend: true,
         minimap: true,
         customBehaviors: ["expand-link-event"],
-        layout: { type: "dagre-tbt" },
+        layout: { type: "depth-vertical" },
         activeNodes: [this.centerId],
         centerNodes: [this.centerId],
         tooltip: {

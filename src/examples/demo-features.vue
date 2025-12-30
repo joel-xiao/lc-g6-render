@@ -65,8 +65,8 @@ const currentLayout = ref('dagre')
 // G6 支持的所有布局类型（移除不支持的布局）
 const layouts = [
   { label: 'Dagre (层次)', value: 'dagre' },
-  { label: 'Dagre-TBT', value: 'dagre-tbt' },
-  // { label: 'Dagre-TGB', value: 'dagre-tgb' },
+  { label: 'Depth-Vertical (深度垂直)', value: 'depth-vertical' },
+  // { label: 'Depth-Grid (深度网格)', value: 'depth-grid' },
   { label: 'Force (力导向)', value: 'force' },
   { label: 'Circular (环形)', value: 'circular' },
   { label: 'Radial (辐射)', value: 'radial' },
@@ -97,17 +97,17 @@ const getLayoutConfig = (layoutType) => {
         ranksep: 100,
         sortByCombo: true
       }
-    case 'dagre-tbt':
+    case 'depth-vertical':
       return {
         ...baseConfig,
-        type: 'dagre-tbt',
+        type: 'depth-vertical',
         nodesep: 70,
         ranksep: 80
       }
-    case 'dagre-tgb':
+    case 'depth-grid':
       return {
         ...baseConfig,
-        type: 'dagre-tgb',
+        type: 'depth-grid',
         nodesep: 70,
         ranksep: 80
       }

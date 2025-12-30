@@ -1,7 +1,7 @@
-import { layoutEdges, layoutGridCombo, layoutNodes, layoutNodesOffset } from '../dagre-tbt/algorithm';
+import { layoutEdges, layoutGridCombo, layoutNodes, layoutNodesOffset } from '../depth-vertical/algorithm';
 
 export const registerLayout = {
-    'dagre-tgb': {
+    'depth-grid': {
         layout: {
             getDefaultCfg() {
                 return {

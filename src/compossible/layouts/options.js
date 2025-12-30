@@ -1,24 +1,17 @@
-import G6 from "@antv/g6";
-import { getDagreOptions } from './dagre/options';
-import { getDagreGridOptions } from './dagre-grid/options';
-import { getGridOptions } from './grid/options';
-import { getRandomOptions } from './random/options';
-import { getDagreTbtOptions } from './dagre-tbt/options';
-import { getDagreTgbOptions } from './dagre-tgb/options';
+import { getDepthVerticalOptions } from './depth-vertical/options';
+import { getDepthGridOptions } from './depth-grid/options';
+
+// 自定义布局映射
+const customLayouts = {
+    'depth-vertical': getDepthVerticalOptions,
+    'depth-grid': getDepthGridOptions
+};
 
 export function getLayout(layout, options) {
-    const data = {
-        'dagre': getDagreOptions(options),
-
-        'dagre-grid': getDagreGridOptions(options),
-
-        'grid': getGridOptions(),
-
-        'random': getRandomOptions(),
-
-        'dagre-tbt': getDagreTbtOptions(),
-
-        'dagre-tgb': getDagreTgbOptions()
-    };
-    return data[layout] || data['dagre'];
+    // 如果是自定义布局，返回对应配置
+    if (customLayouts[layout]) {
+        return customLayouts[layout]();
+    }
+    // 否则透传给 G6 原生布局
+    return options || { type: layout };
 }

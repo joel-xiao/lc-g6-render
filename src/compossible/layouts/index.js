@@ -1,7 +1,7 @@
-import { registerLayout as dagreTgb } from './dagre-tgb/index';
-import { registerLayout as dagreTbt } from './dagre-tbt/index';
+import { registerLayout as depthVertical } from './depth-vertical/index';
+import { registerLayout as depthGrid } from './depth-grid/index';
 
 export const registerLayout = {
-    ...dagreTgb,
-    ...dagreTbt
+    ...depthVertical,
+    ...depthGrid
 };

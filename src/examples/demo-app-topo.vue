@@ -44,7 +44,7 @@ export default {
         minimap: true,
         // 使用 expand-link-event behavior 处理所有交互
         customBehaviors: ["expand-link-event"],
-        layout: { type: "dagre-tgb" },
+        layout: { type: "depth-grid" },
         activeNodes: [this.centerId, this.app_center_id],
         centerNodes: [this.centerId, this.app_center_id],
         tooltip: {
