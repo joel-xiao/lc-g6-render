@@ -1,4 +1,4 @@
-import { getAnimation as getShapeAnimate } from '../../shapes/animations/index'; // Aliasing for compatibility if used, though it seems unused in visible code. Checking file content again showed no usage, but safer to keep reference valid logic-wise or remove if unused. User prompt error confirmed it exists.
+import { getAnimation as getShapeAnimate } from '../../../shapes/animations/index'; // Aliasing for compatibility if used, though it seems unused in visible code. Checking file content again showed no usage, but safer to keep reference valid logic-wise or remove if unused. User prompt error confirmed it exists.
 
 export default {
     // 边动画
