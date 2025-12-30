@@ -1,4 +1,4 @@
-import CustomCombo from './custom-combo';
+import CustomCombo from './custom-combo/index';
 
 export function getRegisterCombo(g6_example) {
     const customCombo = { ...CustomCombo };

@@ -1,5 +1,5 @@
-import { getEdgeShape } from './methods';
-import { getCommonEdge } from './common';
+import { getEdgeShape } from './circle-run/items';
+import { getCommonEdge } from './circle-run/index';
 
 export function getRegisterEdge(g6_example) {
     const registerEdge = {

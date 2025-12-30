@@ -1,4 +1,4 @@
-import NodeIcon from './icon-node';
+import NodeIcon from './node-icon/index';
 
 export function getRegisterNode(g6_example) {
     // Inject g6_example into the definition or bind it
