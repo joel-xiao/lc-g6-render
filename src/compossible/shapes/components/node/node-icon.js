@@ -1,4 +1,4 @@
-import { getHealthSetting } from '../../utils/health';
+import { getHealthSetting } from '../../../utils/health';
 
 export default {
     name: 'node-icon',

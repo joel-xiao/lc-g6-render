@@ -1,4 +1,4 @@
-import { getGraphShape } from '../utils';
+import { getGraphShape } from '../../utils';
 
 export default {
     add(type, { group, cfg, style }) {

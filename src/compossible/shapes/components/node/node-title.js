@@ -1,4 +1,4 @@
-import { fittingStringRows, getRectSize } from '../../utils/text';
+import { fittingStringRows, getRectSize } from '../../../utils/text';
 
 export default {
     name: 'node-title',

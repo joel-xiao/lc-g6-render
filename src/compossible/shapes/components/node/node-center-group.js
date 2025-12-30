@@ -1,4 +1,4 @@
-import { fittingString } from '../../utils/text';
+import { fittingString } from '../../../utils/text';
 
 export default {
     name: 'node-center-group',

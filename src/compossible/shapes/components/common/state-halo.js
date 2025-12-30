@@ -1,4 +1,4 @@
-import { getGraphShape } from '../utils';
+import { getGraphShape } from '../../utils';
 import { getAnimation, isNotAnimate } from '../../animations/index';
 
 export default {
