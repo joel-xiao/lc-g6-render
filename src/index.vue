@@ -87,7 +87,8 @@ watch(() => props.options, () => {
 
 watch(() => props.data, (newData) => {
   if (newData) {
-    setData(newData);
+    // Clone to prevent G6 mutations from triggering Vue watcher (infinite loop)
+    setData(JSON.parse(JSON.stringify(newData)));
   }
 }, { deep: true })
 
@@ -98,7 +99,7 @@ function onSelectLayout(layout) {
 onMounted(() => {
   setTimeout(() => {
     if (props.data) {
-      setData(props.data);
+      setData(JSON.parse(JSON.stringify(props.data)));
     }
   })
 });
