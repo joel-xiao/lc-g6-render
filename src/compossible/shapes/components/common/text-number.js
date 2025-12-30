@@ -1,4 +1,4 @@
-import { fittingString } from '../../utils/text';
+import { fittingString } from '../../../utils/text';
 
 export default {
     add(G6, { group, cfg, style, data, position }) {
