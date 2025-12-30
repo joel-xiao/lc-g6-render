@@ -141,6 +141,14 @@ const ExpandLinkEvent = {
         const caching_insert_id = "outer.insertTopologyData." + model.id;
         const caching_id = "outer.topologyData." + model.id;
 
+        // 检查是否点击的是同一个节点
+        const currentModel = that.caching.getCaching(cachingKey);
+        if (currentModel && currentModel.id === model.id) {
+            // 点击同一个节点，取消选中状态
+            ExpandLinkEvent.cancelNodeEdges(evt, that, onEvent);
+            return;
+        }
+
         // 先取消之前的状态
         ExpandLinkEvent.cancelNodeEdges(evt, that, onEvent);
 
