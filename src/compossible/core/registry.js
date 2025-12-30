@@ -1,12 +1,6 @@
 import G6 from "@antv/g6";
 import { getRegisterNode, getRegisterEdge, getRegisterCombo } from '../shapes/index';
-import { registerLayout as dagreTgb } from '../layouts/dagre-tgb/index';
-import { registerLayout as dagreTbt } from '../layouts/dagre-tbt/index';
-
-const registerLayoutDef = {
-    ...dagreTgb,
-    ...dagreTbt
-};
+import { registerLayout as registerLayoutDef } from '../layouts/index';
 
 class NodeRegistry {
     constructor() {
