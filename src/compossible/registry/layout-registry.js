@@ -1,5 +1,5 @@
 import G6 from "@antv/g6";
-import { registerLayout as dagreTgb } from '../layouts/dagre';
+import { registerLayout as dagreTgb } from '../layouts/dagre-tgb/index';
 import { registerLayout as dagreTbt } from '../layouts/dagre-tbt/index';
 
 const registerLayout = {
