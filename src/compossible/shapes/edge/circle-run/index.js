@@ -1,4 +1,4 @@
-import { getComponent } from '../../components/index';
+import { getComponent } from '../../items/index';
 import { getEdgeShape } from './items';
 import defaults from './options';
 

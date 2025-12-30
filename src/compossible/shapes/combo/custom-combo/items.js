@@ -2,7 +2,7 @@
 import G6 from "@antv/g6";
 import { fittingString, getRectSize } from '../../utils/text';
 import { getHealthSetting } from '../../utils/health';
-import { getComponent } from '../../components/index';
+import { getComponent } from '../../items/index';
 
 export function getComboShape(name) {
     const shape = {

@@ -1,5 +1,5 @@
 import { joinDataMapKey } from '../../../utils/common';
-import { getShape } from '../../../shapes/components/index'; // Updated import
+import { getShape } from '../../../shapes/items/index'; // Updated import
 
 export default {
     click: (g6_graph, e, that, option) => {

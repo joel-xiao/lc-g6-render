@@ -1,4 +1,4 @@
-import { getComponent } from '../../components/index';
+import { getComponent } from '../../items/index';
 
 // Helper Map
 const edgeShapes = {

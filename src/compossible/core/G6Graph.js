@@ -3,7 +3,7 @@ import G6 from "@antv/g6";
 import { assignOptions } from './option-merger';
 import { registry } from './registry';
 import { getLayout } from '../layouts/options';
-import { getShape } from '../shapes/components/index';
+import { getShape } from '../shapes/items/index';
 import { layoutEdges, layoutQuadraticEdges } from '../layouts/dagre-tbt/algorithm';
 import NormalEvent from '../behaviors/normal-event/index';
 import { onEvent, getEvent } from '../behaviors/events/index';
