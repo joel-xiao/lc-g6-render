@@ -2,6 +2,7 @@ import G6 from "@antv/g6";
 import { getTooltipStatus, getHealthSetting } from '../../../utils/health';
 import { getAnchorPoints } from '../../utils';
 import { getComponent } from '../../items';
+import defaults from './options';
 
 const NodeIcon = {
     getAnchorPoints: function (...args) {
